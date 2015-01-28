@@ -33,11 +33,13 @@ if(Tienda::getInstance()->get('custom_language_file', '0'))
 	$lang->load($extension, $base_dir, null, true);
 }
 
+$app = JFactory::getApplication();
+
 // Check if protocol is specified
-$protocol = JRequest::getWord('protocol', '');
+$protocol = $app->input->getWord('protocol', ;;);
 
 // Require specific controller if requested
-$controller = JRequest::getWord('controller', JRequest::getVar( 'view' ) );
+$controller = $app->input->getWord('controller', $app->input->get( 'view' ) );
 
 // if protocol is specified, try to load the specific controller
 if(strlen($protocol))
@@ -57,7 +59,7 @@ if (empty($controller))
     // redirect to default
     $redirect = "index.php?option=com_tienda&view=products";
     $redirect = JRoute::_( $redirect, false );
-    JFactory::getApplication()->redirect( $redirect );
+    $app->redirect( $redirect );
 }
 
 $doc = JFactory::getDocument();
@@ -89,12 +91,12 @@ $classname = 'TiendaController'.$controller;
 $controller = Tienda::getClass( $classname );
 
 // ensure a valid task exists
-$task = JRequest::getVar('task');
+$task = $app->input->get('task');
 if (empty($task))
 {
     $task = 'display';	
 }
-JRequest::setVar( 'task', $task );
+$app->input->set( 'task', $task );
 
 // Perform the requested task
 $controller->execute( $task );
