@@ -2332,8 +2332,8 @@ class TiendaControllerCheckout extends TiendaController
     function preparePayment()
     {
         $this->current_step = 2;
-        // verify that form was submitted by checking token
-        JRequest::checkToken() or jexit( 'TiendaControllerCheckout::preparePayment - Invalid Token' );
+        // verify that form was submitted by checking token        
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
          
         // 1. save the order to the table with a 'pre-payment' status
 

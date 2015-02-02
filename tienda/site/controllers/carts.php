@@ -986,7 +986,7 @@ private function addCouponCodes($values)
 	    $router = new TiendaHelperRoute();
 	
 	    // verify form submitted by user
-	    JRequest::checkToken( 'get' ) or jexit( 'Invalid Token' );
+	    JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 	
 	    $values['product_id'] = JRequest::getInt( 'pid' );
 	

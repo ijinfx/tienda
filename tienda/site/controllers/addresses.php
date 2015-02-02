@@ -73,9 +73,9 @@ class TiendaControllerAddresses extends TiendaController
 			return;
 		}
 		// else creating new item
-		JRequest::setVar( 'hidemainmenu', '1' );
-		JRequest::setVar( 'view', $this->get('suffix') );
-		JRequest::setVar( 'layout', 'form' );
+		$this->input->set( 'hidemainmenu', '1' );
+		$this->input->set( 'view', $this->get('suffix') );
+		$this->input->set( 'layout', 'form' );
 
 		$view  = $this->getView( 'addresses', 'html' );
 		$view->assign('form_inner', $this->getInnerAddressForm($row->address_id));
@@ -90,7 +90,7 @@ class TiendaControllerAddresses extends TiendaController
 	{
 		$html = '';
 		$model = JModel::getInstance( 'Addresses', 'TiendaModel' );
-		$address_id = JRequest::getVar('address_id');
+		$address_id = $this->input->getInt('address_id');
 		$model->setId($address_id);
 		$item = $model->getItem();
 
@@ -117,7 +117,7 @@ class TiendaControllerAddresses extends TiendaController
 	 */
 	function save()
 	{
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));		
 		$model = $this->getModel( $this->get('suffix') );
 		$row = $model->getTable();
 		$row->load( $model->getId() );

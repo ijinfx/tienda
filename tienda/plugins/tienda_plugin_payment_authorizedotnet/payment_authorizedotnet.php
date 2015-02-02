@@ -355,10 +355,10 @@ class plgTiendaPayment_authorizedotnet extends TiendaPaymentPlugin
         /*
          * perform initial checks 
          */
-        if ( ! JRequest::checkToken() ) {
+        if ( ! JSession::checkToken() ) {
             return $this->_renderHtml( JText::_('COM_TIENDA_INVALID_TOKEN') );
         }
-        
+       
         $data = JRequest::get('post');
         
         // get order information

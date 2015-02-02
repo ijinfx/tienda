@@ -48,7 +48,7 @@ class plgTiendaPayment_Paypalpro_Processor_Directpayment extends plgTiendaPaymen
 			return false;
 		}
 		
-		if (!JRequest::checkToken()) {
+		if (!JSession::checkToken()) {
 			$this->setError(JText::_('COM_TIENDA_INVALID_TOKEN'));
 			return false;
 		}

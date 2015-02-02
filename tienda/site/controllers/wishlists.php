@@ -361,7 +361,7 @@ class TiendaControllerWishlists extends TiendaController
      */
     public function shareitems()
     {
-        JRequest::checkToken( ) or jexit( 'Invalid Token' );
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 		JTable::addIncludePath( JPATH_ADMINISTRATOR.'/components/com_tienda/tables' );        
         
         // get the email addresses, cutting list off at 10 unique emails

@@ -494,7 +494,7 @@ class plgTiendaPayment_sagepay extends TiendaPaymentPlugin
         /*
          * perform initial checks 
          */
-        if ( ! JRequest::checkToken() ) {
+        if ( ! JSession::checkToken() ) {
             return $this->_renderHtml( JText::_('COM_TIENDA_INVALID_TOKEN') );
         }
         

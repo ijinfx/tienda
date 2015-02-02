@@ -87,9 +87,9 @@ class TiendaControllerAccounts extends TiendaController
         $row = $model->getTable();
         $row->load( array( 'user_id' => JFactory::getUser()->id ) );
         
-        JRequest::setVar('id', $row->user_info_id );
-    	JRequest::setVar('view', 'accounts');
-    	JRequest::setVar('layout', 'form');
+        $this->input->set('id', $row->user_info_id );
+    	$this->input->set('view', 'accounts');
+    	$this->input->set('layout', 'form');
         parent::display();
     }
     
@@ -122,7 +122,7 @@ class TiendaControllerAccounts extends TiendaController
         }
 
         $redirect = "index.php?option=com_tienda";
-        $task = JRequest::getVar('task');
+        $task = $this->input->getCmd('task');
         switch ($task)
         {
             case "save":

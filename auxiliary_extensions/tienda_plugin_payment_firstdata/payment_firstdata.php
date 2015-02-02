@@ -281,7 +281,7 @@ class plgTiendaPayment_firstdata extends TiendaPaymentPlugin
         /*
          * perform initial checks 
          */
-        if ( ! JRequest::checkToken() ) {
+        if ( ! JSession::checkToken() ) {
             return $this->_renderHtml( JText::_('TIENDA LINKPOINT FIRSTDATA MESSAGE INVALID TOKEN') );
         }
         

@@ -41,7 +41,7 @@ class plgTiendaPayment_Paypalpro_Processor_Expresscheckout extends plgTiendaPaym
 		
 		
 		if ($validate_token) {
-			if (!JRequest::checkToken()) {
+			if (!JSession::checkToken()) {
 				$this->setError(JText::_('COM_TIENDA_INVALID_TOKEN'));
 				return false;
 			}

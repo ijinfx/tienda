@@ -854,7 +854,7 @@ class TiendaControllerManufacturers extends TiendaController
 	 */
 	function addToCart()
 	{
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 		$product_id = JRequest::getInt( 'product_id' );
 		$product_qty = JRequest::getInt( 'product_qty' );
 		$filter_category = JRequest::getInt( 'filter_category' );
@@ -1327,7 +1327,7 @@ class TiendaControllerManufacturers extends TiendaController
 	 */
 	function addChildrenToCart()
 	{
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 		$product_id = JRequest::getInt( 'product_id' );
 		$quantities = JRequest::getVar('quantities', array(0), 'request', 'array');
 		$filter_category = JRequest::getInt( 'filter_category' );
