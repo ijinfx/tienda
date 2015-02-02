@@ -62,8 +62,9 @@ class TiendaControllerPayment extends TiendaController
 	       $row  = JTable::getInstance('plugin');
 	    }
 		
-        $row->bind( JRequest::get('post') );
-        $task = JRequest::getVar('task');
+		$post = $this->input->getArray($_POST);
+        $row->bind( $post );
+        $task = $this->input->getCmd('task');
 
         if ($task == "save_as")
         {

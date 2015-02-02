@@ -26,7 +26,7 @@ class TiendaControllerDashboard extends TiendaController
 	{
 	    $model = $this->getModel( $this->get('suffix') );
 	    $state = $model->getState();
-	    $state->stats_interval = JRequest::getVar('stats_interval', 'last_thirty');
+	    $state->stats_interval = $this->input->getString('stats_interval', 'last_thirty');
 	    $model->setState('stats_interval', $state->stats_interval);
 
 	    $cache = JFactory::getCache('com_tienda');
@@ -51,8 +51,8 @@ class TiendaControllerDashboard extends TiendaController
 	
 	function search()
 	{
-	    $filter = JRequest::getVar('tienda_search_admin_keyword');
-	    $filter_view = JRequest::getCmd('tienda_search_admin_view');
+	    $filter = $this->input->getCmd('tienda_search_admin_keyword');
+	    $filter_view = $this->input->getCmd('tienda_search_admin_view');
 	    
 	    $redirect = "index.php?option=com_tienda&view=" . $filter_view . "&filter=" . urlencode( $filter );
 	    

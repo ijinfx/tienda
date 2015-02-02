@@ -64,7 +64,7 @@ class TiendaControllerGeozones extends TiendaController
         $model = $this->getModel( $this->get('suffix') );
         $ns = $this->getNamespace();
 
-        $id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
+       	$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));
         $row = $model->getTable( 'geozones' );
         $row->load( $id );
 
@@ -107,10 +107,10 @@ class TiendaControllerGeozones extends TiendaController
         $model = $this->getModel($this->get('suffix'));
         $row = $model->getTable();
 
-        $id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
-        $cids = JRequest::getVar('cid', array (0), 'request', 'array');
-		$redirect = JRequest::getVar( 'return' ) ?
-        base64_decode( JRequest::getVar( 'return' ) ) : "index.php?option=com_tienda&controller=geozones&task=selectzones&tmpl=component&id=".$id;
+        $id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));
+        $cids = $this->input->request->get('cid', array (0), 'array');
+		$redirect = $this->input->get( 'return', '', 'base64' ) ?
+        base64_decode( $this->input->get( 'return', '', 'base64' ) ) : "index.php?option=com_tienda&controller=geozones&task=selectzones&tmpl=component&id=".$id;
         $redirect = JRoute::_( $redirect, false );
 		
         if(empty($cids[0])){
@@ -122,7 +122,7 @@ class TiendaControllerGeozones extends TiendaController
         	return;
         } 
 		
-        $task = JRequest::getVar( 'task' );
+        $task = $this->input->getCmd( 'task' );
         $vals = explode('_', $task);
 
         $field = $vals['0'];
@@ -233,10 +233,10 @@ class TiendaControllerGeozones extends TiendaController
         $this->message      = '';
         $model = $this->getModel('zonerelations');
         $row = $model->getTable();
-
-        $id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
-        $cids = JRequest::getVar('cid', array(0), 'request', 'array');
-        $ranges = JRequest::getVar('zip_range', array(0), 'request', 'array');
+       
+		$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));
+        $cids = $this->input->request->get('cid', array(0), 'array');
+        $ranges = $this->input->request->get('zip_range', array(0), 'array');
 
         foreach($cids as $cid)
         {
@@ -282,13 +282,13 @@ class TiendaControllerGeozones extends TiendaController
         $this->messagetype  = '';
         $this->message      = '';
 
-        $type = JRequest::getVar('type');
+        $type = $this->input->getCmd('type');
         Tienda::load( "TiendaHelperPlugin", 'helpers.plugin' );
         $suffix = TiendaHelperPlugin::getSuffix($type);
-
-        $id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
-        $cids = JRequest::getVar('cid', array (0), 'request', 'array');
-        $task = JRequest::getVar( 'task' );
+       
+		$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));
+        $cids = $this->input->request->get('cid', array(0), 'array');
+        $task = $this->input->getCmd( 'task' );
         $vals = explode('_', $task);
 
         $field = $vals['0'];
@@ -391,7 +391,7 @@ class TiendaControllerGeozones extends TiendaController
      */
     function selectplugins()
     {
-        $type = JRequest::getVar('type');
+        $type = $this->input->getCmd('type');
         Tienda::load( "TiendaHelperPlugin", 'helpers.plugin' );
         $suffix = TiendaHelperPlugin::getSuffix($type);
 
@@ -399,8 +399,8 @@ class TiendaControllerGeozones extends TiendaController
         $app = JFactory::getApplication();
         $model = $this->getModel( $suffix );
         $ns = $app->getName().'::'.'com.tienda.model.'.$model->getTable()->get('_suffix');
-
-        $id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
+       
+		$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));        
         $row = $model->getTable( 'geozones' );
         $row->load( $id );
 

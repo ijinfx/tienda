@@ -34,8 +34,8 @@ class TiendaControllerPOS extends TiendaController
 	
 	function display($cachable=false, $urlparams = false)
 	{
-		$post = JRequest::get('post');
-		$step = JRequest::getVar('nextstep', 'step1');
+		$post = $this->input->getArray($_POST);
+		$step = $this->input->getCmd('nextstep', 'step1');
 		if(empty($step))
 		{
 			$step = 'step1';
@@ -76,8 +76,8 @@ class TiendaControllerPOS extends TiendaController
 	 * @return unknown_type
 	 */
 	function saveStep1()
-	{
-		$post = JRequest::get('post');
+	{		
+		$post = $this->input->getArray($_POST);
 		// store the values in the session
 		$session = JFactory::getSession();
 
@@ -397,8 +397,8 @@ class TiendaControllerPOS extends TiendaController
 	function doStep5($post)
 	{
        //do some security check?
-        $pos_id = JRequest::getInt( 'pos_id', 0);
-		$token = JRequest::getCmd( 'pos_token', '' );
+        $pos_id = $this->input->getInt( 'pos_id', 0);
+		$token = $this->input->getCmd( 'pos_token', '' );
         JTable::addIncludePath( JPATH_ADMINISTRATOR.'/components/com_tienda/tables' );
 		$tbl_pos = JTable::getInstance( 'PosRequests', 'TiendaTable' );
 		if( !$tbl_pos->load( array( 'pos_id' => $pos_id, 'user_id' => 0, 'order_id' => 0, 'mode' => 2, 'token' => $token ) ) )
@@ -410,14 +410,14 @@ class TiendaControllerPOS extends TiendaController
 
 		$data = json_decode(base64_decode($tbl_pos->data));
 		if(is_object($data)) $data = get_object_vars($data);
-		$values = JRequest::get('get');
+		$values = $this->input->getArray($_GET);
 		$values = array_merge($data, $values);
 		
 		$order_id = $values['order_id'];
 		$session = JFactory::getSession();
-		$orderpayment_type = JRequest::getVar('orderpayment_type', $session->get('payment_plugin', '', 'tienda_pos'));
+		$orderpayment_type = $this->input->get('orderpayment_type', $session->get('payment_plugin', '', 'tienda_pos'));
 			
-		$doneReloading = JRequest::getInt('reloaded');
+		$doneReloading = $this->input->getInt('reloaded');
 		// TODO find other way to do this check - there can be other offline payment types (new ones or created by users)
 		if( ($orderpayment_type == 'payment_offline' || $orderpayment_type == 'payment_ccoffline') && !$doneReloading)
 		{
@@ -511,7 +511,7 @@ class TiendaControllerPOS extends TiendaController
 	//TODO: making it task display instead to have access to the post
 	function saveStep3()
 	{
-		$values = JRequest::get('post');
+		$values = $this->input->getArray($_POST);
 
 		$session = JFactory::getSession();
 		if(empty($values['payment_plugin']))
@@ -559,7 +559,7 @@ class TiendaControllerPOS extends TiendaController
 
 	function saveShipping()
 	{
-		$post = JRequest::get('post');
+		$post = $this->input->getArray($_POST);
 		$session = JFactory::getSession();
 		$session->set('shipping_plugin', $post['shipping_plugin'], 'tienda_pos');
 		$session->set('shipping_price', $post['shipping_price'], 'tienda_pos');
@@ -586,7 +586,7 @@ class TiendaControllerPOS extends TiendaController
 		$response['error'] = '';
 
 		// get elements from post
-		$elements = json_decode(preg_replace('/[\n\r]+/', '\n', JRequest::getVar('elements', '', 'post', 'string')));
+		$elements = json_decode(preg_replace('/[\n\r]+/', '\n', $this->input->post->getString('elements')));
 
 		// validate it using table's ->check() method
 		if(empty($elements))
@@ -925,7 +925,7 @@ class TiendaControllerPOS extends TiendaController
 	function validateCouponCode()
 	{
 		JLoader::import('com_tienda.library.json', JPATH_ADMINISTRATOR.'/components');
-		$elements = json_decode(preg_replace('/[\n\r]+/', '\n', JRequest::getVar('elements', '', 'post', 'string')));
+		$elements = json_decode(preg_replace('/[\n\r]+/', '\n', $this->input->post->getString('elements')));
 
 		// convert elements to array that can be binded
 		Tienda::load('TiendaHelperBase', 'helpers._base');
@@ -933,7 +933,7 @@ class TiendaControllerPOS extends TiendaController
 		$values = $helper->elementsToArray($elements);
        	$values['sameasbilling'] = isset($values['_checked']['sameasbilling']) && !empty( $values['_checked']['sameasbilling']);
 		
-		$coupon_code = JRequest::getVar('coupon_code', '');
+		$coupon_code = $this->input->get('coupon_code', '');
 
 		$response = array();
 		$response['msg'] = '';
@@ -986,7 +986,7 @@ class TiendaControllerPOS extends TiendaController
     function validateApplyCredit()
     {
         JLoader::import( 'com_tienda.library.json', JPATH_ADMINISTRATOR.'/components' );            
-        $elements = json_decode( preg_replace('/[\n\r]+/', '\n', JRequest::getVar( 'elements', '', 'post', 'string' ) ) );
+        $elements = json_decode( preg_replace('/[\n\r]+/', '\n', $this->input->post->getString('elements') ) );
 
         // convert elements to array that can be binded
         Tienda::load( 'TiendaHelperBase', 'helpers._base' );
@@ -996,7 +996,7 @@ class TiendaControllerPOS extends TiendaController
 	    
         $session = JFactory::getSession();
 		$user_id = $session->get('user_id', '', 'tienda_pos');
-        $apply_credit_amount = (float) JRequest::getVar( 'apply_credit_amount', '');
+        $apply_credit_amount = $this->input->get( 'apply_credit_amount', '', 'FLOAT');
         
         $response = array();
         $response['msg'] = '';
@@ -1142,7 +1142,7 @@ class TiendaControllerPOS extends TiendaController
 	 */
 	function viewProduct()
 	{
-		JRequest::setVar( 'page', 'pos' );
+		$this->input->set( 'page', 'pos' );
 		$model = $this->getModel('Products');
 		$model->setId($model->getId());
 		$row = $model->getItem();
@@ -1200,11 +1200,11 @@ class TiendaControllerPOS extends TiendaController
 	 * Method to item to cart
 	 */
 	function addToCart()
-	{
-		$post = JRequest::get('post');
-		$files = JRequest::get('files');
+	{		
+		$post = $this->input->getArray($_POST);
+		$files = $this->input->getArray($_FILES);		
 		$product_id = $post['product_id'];
-
+		
 		// get attributes
 		$attributes = array();
 		foreach($post as $key => $value)
@@ -1412,11 +1412,10 @@ class TiendaControllerPOS extends TiendaController
 	 */
 	function removeItems()
 	{
-		$model = $this->getModel('carts');
-		$post = JRequest::get('post');
-		$cids = JRequest::getVar('cid', array(0), '', 'ARRAY');
-		$product_attributes = JRequest::getVar('product_attributes', array(0), '', 'ARRAY');
-		$quantities = JRequest::getVar('quantities', array(0), '', 'ARRAY');
+		$model = $this->getModel('carts');		
+		$cids = $this->input->get('cid', array(0), 'array');
+		$product_attributes = $this->input->get('product_attributes', array(0), 'array');
+		$quantities = $this->input->get('quantities', array(0), 'array');
 
 		$session = JFactory::getSession();
 		$user_id = $session->get('user_id', '', 'tienda_pos');
@@ -1448,11 +1447,10 @@ class TiendaControllerPOS extends TiendaController
 
 	function updateQty()
 	{
-		$model = $this->getModel('carts');
-		$post = JRequest::get('post');
-		$cids = JRequest::getVar('cid', array(0), '', 'ARRAY');
-		$product_attributes = JRequest::getVar('product_attributes', array(0), '', 'ARRAY');
-		$quantities = JRequest::getVar('quantities', array(0), '', 'ARRAY');
+		$model = $this->getModel('carts');		
+		$cids = $this->input->get('cid', array(0), 'array');
+		$product_attributes = $this->input->get('product_attributes', array(0), 'array');
+		$quantities = $this->input->get('quantities', array(0), 'array');
 
 		$session = JFactory::getSession();
 		$user_id = $session->get('user_id', '', 'tienda_pos');
@@ -1865,7 +1863,7 @@ class TiendaControllerPOS extends TiendaController
 	
 	function saveAddress()
 	{		
-		$post = JRequest::get('post');	
+		$post = $this->input->get($_POST);	
 		$session = JFactory::getSession();
 		$user_id = $session->get('user_id', '', 'tienda_pos');
 		
@@ -2104,7 +2102,7 @@ class TiendaControllerPOS extends TiendaController
 	 */
 	function setShippingMethod()
 	{
-		$elements = json_decode(preg_replace('/[\n\r]+/', '\n', JRequest::getVar('elements', '', 'post', 'string')));
+		$elements = json_decode(preg_replace('/[\n\r]+/', '\n', $this->input->post->getString('elements')));
 
 		// convert elements to array that can be binded
 		Tienda::load('TiendaHelperBase', 'helpers._base');
@@ -2179,7 +2177,7 @@ class TiendaControllerPOS extends TiendaController
 		$helper = TiendaHelperBase::getInstance();
 
 		// get elements from post
-		$elements = json_decode(preg_replace('/[\n\r]+/', '\n', JRequest::getVar('elements', '', 'post', 'string')));
+		$elements = json_decode(preg_replace('/[\n\r]+/', '\n', $this->input->post->getString('elements')));
 
 		// Test if elements are empty
 		// Return proper message to user
@@ -2292,13 +2290,13 @@ class TiendaControllerPOS extends TiendaController
 	{
 		// Use AJAX to show plugins that are available
 		JLoader::import('com_tienda.library.json', JPATH_ADMINISTRATOR.'/components');
-		$values = JRequest::get('post');
+		$values = $this->input->get($_POST);
 		$html = '';
 		$text = "";
 		$user = JFactory::getUser();
 		if(empty($element))
 		{
-			$element = JRequest::getVar('payment_element');
+			$element = $this->input->getCmd('payment_element');
 		}
 		$results = array();
 		$dispatcher = JDispatcher::getInstance();
@@ -2439,8 +2437,8 @@ class TiendaControllerPOS extends TiendaController
 		$html = '';
 		$text = '';
 			
-		$country_id = JRequest::getVar('country_id');
-		$prefix = JRequest::getVar('prefix');
+		$country_id = $this->input->getInt('country_id');
+		$prefix = $this->input->getCmd('prefix');
 		
 		if (empty($country_id))
 		{
@@ -2797,7 +2795,7 @@ class TiendaControllerPOS extends TiendaController
 
 		$row->notify_customer = '0';
 		// don't notify the customer on prepayment
-		$row->comments = JRequest::getVar('order_history_comments', '', 'post');
+		$row->comments = $this->input->post->getString('order_history_comments');
 
 		if(!$row->save())
 		{
@@ -3042,7 +3040,7 @@ class TiendaControllerPOS extends TiendaController
 	function addaddress()
 	{		
 		$this->set('suffix', 'addresses');
-		$post = JRequest::get('post');
+		$post = $this->input->get($_POST);
 		
 		$model = $this->getModel( $this->get('suffix') );
         $row = $model->getTable();
@@ -3051,7 +3049,7 @@ class TiendaControllerPOS extends TiendaController
         $row->_isNew = empty($row->address_id);
 
         $redirect = "index.php?option=com_tienda&view=pos&task=addresses";
-    	if (JRequest::getVar('tmpl') == 'component')
+    	if ($this->input->getCmd('tmpl') == 'component')
     	{
         	$redirect .= "&tmpl=component";
         }
@@ -3100,7 +3098,7 @@ class TiendaControllerPOS extends TiendaController
         $this->messagetype  = '';
         $this->message      = '';
         $redirect = 'index.php?option=com_tienda&view=pos&task=addresses';
-    	if (JRequest::getVar('tmpl') == 'component')
+    	if ($this->input->getCmd('tmpl') == 'component')
     	{
         	$redirect .= "&tmpl=component";
         }
@@ -3110,7 +3108,7 @@ class TiendaControllerPOS extends TiendaController
         $model = $this->getModel($this->get('suffix'));
         $row = $model->getTable();
  
-        $task = JRequest::getVar( 'task' );
+        $task = $this->input->getCmd( 'task' );
         $actions = explode( '_', $task );
         if (!is_array($actions)) 
         {
@@ -3123,7 +3121,7 @@ class TiendaControllerPOS extends TiendaController
         $act = $actions['1'];
         $errors = array();
         
-        $cids = JRequest::getVar('cid', array (0), 'post', 'array');
+        $cids = $this->input->post->get('cid', array (0), 'array');
         foreach (@$cids as $cid)
         {
             switch($act)
@@ -3243,7 +3241,7 @@ class TiendaControllerPOS extends TiendaController
         $response['error'] = '';
 
         // get elements from post
-        $elements = json_decode( preg_replace( '/[\n\r]+/', '\n', JRequest::getVar( 'elements', '', 'post', 'string' ) ) );
+        $elements = json_decode( preg_replace( '/[\n\r]+/', '\n', $this->input->post->getString('elements') ) );
 
         // convert elements to array that can be binded
         Tienda::load( 'TiendaHelperBase', 'helpers._base' );
@@ -3251,15 +3249,15 @@ class TiendaControllerPOS extends TiendaController
         $values = $helper->elementsToArray( $elements );
 
         // merge current elements with post
-        $request_arr = JRequest::get();
+        $request_arr = $this->input->getArray($_GET);
         unset( $request_arr['elements'] );
-        JRequest::setVar( 'elements', null );
+        $this->input->set( 'elements', null );
         $values = array_merge( $values, $request_arr );
-        JRequest::set( $values, 'POST' );
+        $this->input->post->set( $values );
 
         if ( empty( $values['product_id'] ) )
         {
-            $values['product_id'] = JRequest::getInt( 'product_id', 0 );
+            $values['product_id'] = $this->input->getInt( 'product_id', 0 );
         }
 
         // now get the summary

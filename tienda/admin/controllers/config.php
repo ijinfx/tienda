@@ -38,8 +38,8 @@ class TiendaControllerConfig extends TiendaController
         foreach (@$properties as $key => $value ) 
         {
             unset($row);
-            $row = $model->getTable( 'config' );
-            $newvalue = JRequest::getVar( $key,'','post','string',JREQUEST_ALLOWRAW | JREQUEST_NOTRIM);
+            $row = $model->getTable( 'config' );           
+			$newvalue = $this->input->post->getString($key);
             $value_exists = array_key_exists( $key, $_POST );
             if ( $value_exists && !empty($key) ) 
             { 
@@ -73,7 +73,7 @@ class TiendaControllerConfig extends TiendaController
         }
         
         $redirect = "index.php?option=com_tienda&view=".$this->get('suffix');
-        $group = JRequest::getVar('group');
+        $group = $this->input->getCmd('group');
         switch ($group)
         {
             default:
@@ -83,7 +83,7 @@ class TiendaControllerConfig extends TiendaController
                 break;
         }
 
-        $format = JRequest::getVar('format');
+        $format = $this->input->getCmd('format');
         if ($format == 'raw') 
         {
             $response = array();
@@ -99,43 +99,43 @@ class TiendaControllerConfig extends TiendaController
     
     public function all($cachable=false, $urlparams = false) 
     {
-        JRequest::setVar('layout', 'all');        
+        $this->input->set('layout', 'all');        
         parent::display($cachable, $urlparams);
     }
     
     public function displaysettings($cachable=false, $urlparams = false)
     {
-        JRequest::setVar('layout', 'displaysettings');
+        $this->input->set('layout', 'displaysettings');
         parent::display($cachable, $urlparams);
     }
     
     public function orders($cachable=false, $urlparams = false)
     {
-        JRequest::setVar('layout', 'orders');
+        $this->input->set('layout', 'orders');
         parent::display($cachable, $urlparams);
     }
     
     public function products($cachable=false, $urlparams = false)
     {
-        JRequest::setVar('layout', 'products');
+        $this->input->set('layout', 'products');
         parent::display($cachable, $urlparams);
     }
     
     public function emails($cachable=false, $urlparams = false)
     {
-        JRequest::setVar('layout', 'emails');
+        $this->input->set('layout', 'emails');
         parent::display($cachable, $urlparams);
     }
     
     public function admin($cachable=false, $urlparams = false)
     {
-        JRequest::setVar('layout', 'admin');
+        $this->input->set('layout', 'admin');
         parent::display($cachable, $urlparams);
     }
     
     public function advanced($cachable=false, $urlparams = false)
     {
-        JRequest::setVar('layout', 'advanced');
+        $this->input->set('layout', 'advanced');
         parent::display($cachable, $urlparams);
     }
     

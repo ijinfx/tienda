@@ -53,7 +53,7 @@ class TiendaControllerZonerelations extends TiendaController
 		}
 		
     	$redirect = "index.php?option=com_tienda&tmpl=component&geozoneid=$geozoneid";
-    	$task = JRequest::getVar('task');
+    	$task = $this->input->getCmd('task');
     	switch ($task)
     	{
     		case "savenew":
@@ -98,8 +98,8 @@ class TiendaControllerZonerelations extends TiendaController
 	    $row->load( $model->getId() );
 		$geozoneid = $row->geozone_id;
 		
-		$this->redirect = JRequest::getVar( 'return' )
-		  ? base64_decode( JRequest::getVar( 'return' ) )
+		$this->redirect = $this->input->get( 'return', '', 'base64' )
+		  ? base64_decode( $this->input->get( 'return', '', 'base64' ) )
 		  : "index.php?option=com_tienda&task=configzones&tmpl=component&geozoneid=$geozoneid&view==".$this->get('suffix');
 		$this->redirect = JRoute::_( $this->redirect, false );
         parent::delete();
@@ -119,7 +119,7 @@ class TiendaControllerZonerelations extends TiendaController
 
       	$state['filter_typeid'] 	= $app->getUserStateFromRequest($ns.'typeid', 'filter_typeid', '', '');
       	
-      	$geozoneid = JRequest::getVar ( 'geozoneid' );
+      	$geozoneid = $this->input->getInt ( 'geozoneid' );
 		$state['filter_geozoneid'] = $geozoneid;
 
     	foreach (@$state as $key=>$value)
@@ -127,7 +127,7 @@ class TiendaControllerZonerelations extends TiendaController
 			$model->setState( $key, $value );	
 		}
 		
-		$id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
+		$id = $this->input->get->getInt( 'id', $this->input->post->getInt( 'id', '0' ) );
 		$row = $model->getTable( 'zonerelations' );
 		$row->load( $id );
 

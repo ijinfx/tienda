@@ -57,8 +57,8 @@ class TiendaControllerAddresses extends TiendaController
         $html = '';
         $text = '';
     	
-    	$country_id = JRequest::getVar('country_id');
-    	$name = JRequest::getVar('name', 'zone_id');
+    	$country_id = $this->input->getInt('country_id');
+    	$name = $this->input->getCmd('name', 'zone_id');
     	if (empty($country_id)) {
     	    $html = JText::_('COM_TIENDA_SELECT_COUNTRY_FIRST');
     	} else {
@@ -80,7 +80,7 @@ class TiendaControllerAddresses extends TiendaController
 		$html = '';
 		
 		//get addressid from request
-		$addressid = JRequest::getVar( 'addressid', '', 'request', 'int' );		
+		$addressid = $this->input->request->getInt('addressid');
 
 		//load model: addresses
 		$model = $this->getModel( $this->get('suffix') );

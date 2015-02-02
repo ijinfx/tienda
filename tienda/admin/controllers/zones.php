@@ -64,8 +64,8 @@ class TiendaControllerZones extends TiendaController
 		Tienda::load( 'TiendaSelect', 'library.select' );
 		
 		$idtag = 'zone_id';
-		$countryid = JRequest::getVar( 'countryid', '', 'request', 'int' );
-		$idprefix = JRequest::getVar( 'idprefix', '', 'request');
+		$countryid = $this->input->request->getInt( 'countryid' );
+		$idprefix = $this->input->request->getCmd( 'idprefix');
 		if (count($idprefix)>0){$idtag = $idprefix.$idtag;}		
 		
 		$url = "index.php?option=com_tienda&format=raw&controller=zones&task=addZone&geozoneid=";
@@ -73,7 +73,7 @@ class TiendaControllerZones extends TiendaController
 			'class' => 'inputbox',
 			'size' => '1');
 		
-		$hookgeozone = JRequest::getVar( 'hookgeozone', TRUE, 'request', 'boolean' );
+		$hookgeozone = $this->input->request->getBool( 'hookgeozone', TRUE );
 		if($hookgeozone){
 			$attribs['onchange'] = 'tiendaDoTask( \''.$url.'\'+document.getElementById(\'geozone_id\').value+\'&zoneid=\'+this.options[this.selectedIndex].value, \'current_zones_wrapper\', \'\');';
 		}
@@ -98,8 +98,8 @@ class TiendaControllerZones extends TiendaController
 	{
 		JLoader::import( 'com_tienda.library.json', JPATH_ADMINISTRATOR.'/components' );
 
-		$zoneid = JRequest::getVar( 'zoneid', '', 'request', 'int' );		
-		$geozoneid = JRequest::getVar( 'geozoneid', '', 'request', 'int' );
+		$zoneid = $this->input->request->getInt( 'zoneid' );		
+		$geozoneid = $this->input->request->getInt( 'geozoneid' );
 
 		JTable::addIncludePath( JPATH_ADMINISTRATOR.'/components/com_tienda/tables' );
 		$zonerelation = JTable::getInstance( 'Zonerelations', 'TiendaTable' );
@@ -136,8 +136,8 @@ class TiendaControllerZones extends TiendaController
 	{
 		JLoader::import( 'com_tienda.library.json', JPATH_ADMINISTRATOR.'/components' );
 
-		$zrid = JRequest::getVar( 'zrid', '', 'request', 'int' );		
-		$geozoneid = JRequest::getVar( 'geozoneid', '', 'request', 'int' );
+		$zrid = $this->input->request->getInt( 'zrid' );		
+		$geozoneid = $this->input->request->getInt( 'geozoneid' );
 
 		JTable::addIncludePath( JPATH_ADMINISTRATOR.'/components/com_tienda/tables' );
 		$zonerelation = JTable::getInstance( 'Zonerelations', 'TiendaTable' );

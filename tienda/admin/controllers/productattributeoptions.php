@@ -31,7 +31,7 @@ class TiendaControllerProductAttributeOptions extends TiendaController
 		$this->messagetype = '';
 		$error = false;
 		
-		$cids = JRequest::getVar('cid', array (0), 'request', 'array');
+		$cids = $this->input->request->get('cid', array (0), 'array');
 				
 		// Get the ProductQuantities model
 		$qmodel = JModel::getInstance('ProductQuantities', 'TiendaModel');
@@ -69,9 +69,9 @@ class TiendaControllerProductAttributeOptions extends TiendaController
 	 */
 	public function getProductAttributeOptions()
 	{
-		$attribute_id = JRequest::getInt('attribute_id', 0);
-		$name = JRequest::getVar('select_name', 'parent');
-		$id = JRequest::getVar('select_id', '0');
+		$attribute_id = $this->input->getInt('attribute_id', 0);
+		$name = $this->input->get('select_name', 'parent');
+		$id = $this->input->getCmd('select_id', '0');
 		
 		$response = array();
 		$response['msg'] = '';

@@ -130,12 +130,12 @@ class TiendaControllerShippingMethods extends TiendaController
         $model = $this->getModel('shippingrates');
         $row = $model->getTable();
         
-        $cids = JRequest::getVar('cid', array(0), 'request', 'array');
-        $geozones = JRequest::getVar('geozone', array(0), 'request', 'array');
-        $prices = JRequest::getVar('price', array(0), 'request', 'array');
-        $weight_starts = JRequest::getVar('weight_start', array(0), 'request', 'array');
-        $weight_ends = JRequest::getVar('weight_end', array(0), 'request', 'array');
-        $handlings = JRequest::getVar('handling', array(0), 'request', 'array');
+        $cids = $this->input->request->get('cid', array(0), 'array');
+        $geozones = $this->input->request->get('geozone', array(0), 'array');
+        $prices = $this->input->request->get('price', array(0), 'array');
+        $weight_starts = $this->input->request->get('weight_start', array(0), 'array');
+        $weight_ends = $this->input->request->get('weight_end', array(0), 'array');
+        $handlings = $this->input->request->get('handling', array(0), 'array');
         
         foreach (@$cids as $cid)
         {

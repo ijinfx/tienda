@@ -71,7 +71,7 @@ class TiendaControllerCoupons extends TiendaController
 			$model->setState( $key, $value );
 		}
 
-		$id = JRequest::getInt( 'id', 0 );
+		$id = $this->input->getInt( 'id', 0 );
 		
 		$row = $model->getTable( 'coupons' );
 		
@@ -86,7 +86,7 @@ class TiendaControllerCoupons extends TiendaController
 		$view->assign( 'row', $row );
 		$view->setLayout( 'selectproducts' );
 		$view->setTask(true);
-		JRequest::setVar( 'hidemainmenu', '1' );
+		$this->input->set( 'hidemainmenu', '1' );
 		$view->display();
 	}
 	
@@ -103,9 +103,9 @@ class TiendaControllerCoupons extends TiendaController
 		$model = $this->getModel($this->get('suffix'));
 		$row = $model->getTable();
 
-		$id = JRequest::getInt( 'id', 0 );
-		$cids = JRequest::getVar('cid', array (0), 'request', 'array');
-		$task = JRequest::getVar( 'task' );
+		$id = $this->input->getInt( 'id', 0 );
+		$cids = $this->input->request->get('cid', array (0), 'array');
+		$task = $this->input->getCmd( 'task' );
 		$vals = explode('_', $task);
 
 		$field = $vals['0'];
@@ -200,8 +200,8 @@ class TiendaControllerCoupons extends TiendaController
 			$this->message = "";
 		}
 
-		$redirect = JRequest::getVar( 'return' ) ?
-		base64_decode( JRequest::getVar( 'return' ) ) : "index.php?option=com_tienda&controller=coupons&task=selectproducts&tmpl=component&id=".$id;
+		$redirect = $this->input->get( 'return', '', 'base64' ) ?
+		base64_decode( $this->input->get( 'return', '', 'base64' ) ) : "index.php?option=com_tienda&controller=coupons&task=selectproducts&tmpl=component&id=".$id;
 		$redirect = JRoute::_( $redirect, false );
 
 		$this->setRedirect( $redirect, $this->message, $this->messagetype );

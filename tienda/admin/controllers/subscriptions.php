@@ -72,10 +72,9 @@ class TiendaControllerSubscriptions extends TiendaController
      */
     function update()
     {
-        $row = JTable::getInstance('SubscriptionHistory', 'TiendaTable');
-        $post = JRequest::get('post', '4');
-        $row->bind( $post );
-        $row->subscription_id = JRequest::getInt('id');
+        $row = JTable::getInstance('SubscriptionHistory', 'TiendaTable');        
+        $row->bind( $this->input->getArray($_POST) );
+        $row->subscription_id = $this->input->getInt('id');
         if ($row->save())
         {
             $model = $this->getModel( $this->get('suffix') );

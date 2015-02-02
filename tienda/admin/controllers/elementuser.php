@@ -51,7 +51,7 @@ class TiendaControllerElementUser extends TiendaController
     {
         $this->hidefooter = true;
         
-        $object = JRequest::getVar('object');
+        $object = $this->input->getCmd('object');
         $view = $this->getView( $this->get('suffix'), 'html' );
         $view->assign( 'object', $object );
 				$view->setTask(true);

@@ -40,7 +40,7 @@ class TiendaControllerProductsJson extends TiendaControllerProducts implements T
 		$helper = TiendaHelperBase::getInstance();
 
 		// get elements from post
-		$elements = json_decode( preg_replace('/[\n\r]+/', '\n', JRequest::getVar( 'elements', '', 'post', 'string' ) ) );
+		$elements = json_decode( preg_replace('/[\n\r]+/', '\n', $this->input->post->getString('elements') ) );
 
 		// convert elements to array that can be binded
 		Tienda::load( 'TiendaHelperBase', 'helpers._base' );
@@ -48,7 +48,7 @@ class TiendaControllerProductsJson extends TiendaControllerProducts implements T
 		$submitted_values = $helper->elementsToArray( $elements );
 
 		$product_id = $submitted_values['new_relationship_productid_from'];
-		$productrelation_id = JRequest::getInt('productrelation_id');
+		$productrelation_id = $this->input->getInt('productrelation_id');
 
 		$table = JTable::getInstance('ProductRelations', 'TiendaTable');
 		$table->delete( $productrelation_id );
@@ -80,7 +80,7 @@ class TiendaControllerProductsJson extends TiendaControllerProducts implements T
 		$helper = TiendaHelperBase::getInstance();
 
 		// get elements from post
-		$elements = json_decode( preg_replace('/[\n\r]+/', '\n', JRequest::getVar( 'elements', '', 'post', 'string' ) ) );
+		$elements = json_decode( preg_replace('/[\n\r]+/', '\n', $this->input->post->getString('elements') ) );
 
 		// convert elements to array that can be binded
 		Tienda::load( 'TiendaHelperBase', 'helpers._base' );
@@ -178,7 +178,7 @@ class TiendaControllerProductsJson extends TiendaControllerProducts implements T
 		$response['default_image'] = '';
 		$response['default_image_name'] = '';
 
-		$product_id = JRequest::getInt('product_id');
+		$product_id = $this->input->getInt('product_id');
 		Tienda::load( 'TiendaUrl', 'library.url' );
 		Tienda::load( "TiendaHelperProduct", 'helpers.product' );
 

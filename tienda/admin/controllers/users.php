@@ -136,7 +136,7 @@ class TiendaControllerUsers extends TiendaController
 
 	function change_subnum()
 	{
-		$sub_num  = JRequest::getInt( 'sub_number', 0 );
+		$sub_num  = $this->input->getInt( 'sub_number', 0 );
 		$model = JModel::getInstance( 'Users', 'TiendaModel' );
 		$id = $model->getId();
 		$url = JRoute::_( 'index.php?option=com_tienda&controller=users&view=users&task=view&id='.$id, false );

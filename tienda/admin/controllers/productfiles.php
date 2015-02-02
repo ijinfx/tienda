@@ -31,8 +31,8 @@ class TiendaControllerProductFiles extends TiendaController
 	function downloadFile( )
 	{
 		$user = JFactory::getUser( );
-		$productfile_id = intval( JRequest::getvar( 'id', '', 'request', 'int' ) );
-		$product_id = intval( JRequest::getvar( 'product_id', '', 'request', 'int' ) );
+		$productfile_id = $this->input->request->getInt('id');
+		$product_id = $this->input->request->getInt('product_id');		
 		$link = 'index.php?option=com_tienda&view=products&task=edit&id=' . $product_id;
 		
 		Tienda::load( 'TiendaHelperBase', 'helpers._base' );

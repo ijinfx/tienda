@@ -59,7 +59,7 @@ class TiendaControllerEavAttributes extends TiendaController
 	 */
 	function selectentities()
 	{
-		$type = JRequest::getVar('eaventity_type', 'products');
+		$type = $this->input->getCmd('eaventity_type', 'products');
 		
 		$this->set('suffix', $type);
 		$state = parent::_setModelState();
@@ -71,8 +71,8 @@ class TiendaControllerEavAttributes extends TiendaController
 		{
 			$model->setState( $key, $value );
 		}
-
-		$id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
+		
+		$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));
 		$row = $model->getTable( 'eavattributes' );
 		$row->load( $id );
 
@@ -97,15 +97,15 @@ class TiendaControllerEavAttributes extends TiendaController
 		$error = false;
 		$this->messagetype  = '';
 		$this->message      = '';
-
-		$type = JRequest::getVar('eaventity_type', 'products');
 		
+		$type = $this->input->getCmd('eaventity_type', 'products');
+			
 		$model = $this->getModel($this->get('suffix'));
 		$row = $model->getTable();
 
-		$id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
-		$cids = JRequest::getVar('cid', array (0), 'request', 'array');
-		$task = JRequest::getVar( 'task' );
+		$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));
+		$cids = $this->input->request->get('cid', array (0), 'array');
+		$task = $this->input->getCmd( 'task' );
 		$vals = explode('_', $task);
 
 		$field = $vals['0'];
@@ -204,8 +204,8 @@ class TiendaControllerEavAttributes extends TiendaController
 			$this->message = "";
 		}
 
-		$redirect = JRequest::getVar( 'return' ) ?
-		base64_decode( JRequest::getVar( 'return' ) ) : "index.php?option=com_tienda&controller=eavattributes&task=selectentities&tmpl=component&eaventity_type={$type}&id=".$id;
+		$redirect = $this->input->get( 'return', '', 'base64' ) ?
+		base64_decode( $this->input->get( 'return', '', 'base64' ) ) : "index.php?option=com_tienda&controller=eavattributes&task=selectentities&tmpl=component&eaventity_type={$type}&id=".$id;
 		$redirect = JRoute::_( $redirect, false );
 
 		$this->setRedirect( $redirect, $this->message, $this->messagetype );

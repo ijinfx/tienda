@@ -103,10 +103,10 @@ class TiendaControllerTaxclasses extends TiendaController
         
         $row = $model->getTable();
         
-        $cids = JRequest::getVar('cid', array(0), 'request', 'array');
-        $rates = JRequest::getVar('rate', array(0), 'request', 'array');
-        $levels = JRequest::getVar('levels', array(0), 'request', 'array');
-        $descriptions = JRequest::getVar('description', array(0), 'request', 'array');
+        $cids = $this->input->request->get('cid', array(0), 'array');
+        $rates = $this->input->request->get('rate', array(0), 'array');
+        $levels = $this->input->request->get('levels', array(0), 'array');
+        $descriptions = $this->input->request->get('description', array(0), 'array');
         
         foreach (@$cids as $cid)
         {

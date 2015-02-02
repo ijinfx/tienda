@@ -44,7 +44,7 @@ class TiendaControllerElementProduct extends DSCControllerAdmin
     {
         $this->hidefooter = true;
         
-        $object = JRequest::getVar('object');
+        $object = $this->input->getCmd('object');
         $view = $this->getView( $this->get('suffix'), 'html' );
         $view->assign( 'object', $object );
         parent::display();

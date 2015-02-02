@@ -62,8 +62,8 @@ class TiendaControllerShipping extends TiendaController
 	       $row  = JTable::getInstance('plugin');
 	    }
 		
-        $row->bind( JRequest::get('post') );
-        $task = JRequest::getVar('task');
+        $row->bind( $this->input->getArray($_POST) );
+        $task = $this->input->getCmd('task');
 
         if ($task == "save_as")
         {
@@ -138,7 +138,7 @@ class TiendaControllerShipping extends TiendaController
      */
     function execute( $task )
     {
-    	$shippingTask = JRequest::getCmd('shippingTask', '');
+    	$shippingTask = $this->input->getCmd('shippingTask', '');
 
     	// Check if we are in a shipping method view. If it is so, 
     	// Try lo load the shipping plugin controller (if any)
@@ -146,7 +146,7 @@ class TiendaControllerShipping extends TiendaController
     	{
     		$model = $this->getModel('Shipping', 'TiendaModel');
 
-    		$id = JRequest::getInt('id', '0');
+    		$id = $this->input->getInt('id', '0');
     		
     		if(!$id)
     			parent::execute($task);

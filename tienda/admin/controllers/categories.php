@@ -97,10 +97,11 @@ class TiendaControllerCategories extends TiendaController
 		$model 	= $this->getModel( $this->get('suffix') );
 		$error = false;
 		
-		$row->category_description = JRequest::getVar( 'category_description', '', 'post', 'string', JREQUEST_ALLOWRAW);
+		$row->category_description = $this->input->post->getString('category_description');
 		
 		$fieldname = 'category_full_image_new';
-		$userfile = JRequest::getVar( $fieldname, '', 'files', 'array' );
+		
+		$userfile = $this->input->files->get($userfile, array(), 'array');
 		if (!empty($userfile['size']))
 		{
 			if ($upload = $this->addfile( $fieldname ))
@@ -185,7 +186,7 @@ class TiendaControllerCategories extends TiendaController
 			$model->setState( $key, $value );
 		}
 
-		$id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
+		$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));
 		$row = $model->getTable( 'categories' );
 		$row->load( $id );
 
@@ -213,10 +214,10 @@ class TiendaControllerCategories extends TiendaController
 
 		$model = $this->getModel($this->get('suffix'));
 		$row = $model->getTable();
-
-		$id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
-		$cids = JRequest::getVar('cid', array (0), 'request', 'array');
-		$task = JRequest::getVar( 'task' );
+		
+		$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));
+		$cids = $this->input->get('cid', array (0), 'array');
+		$task = $this->input->getCmd( 'task' );
 		$vals = explode('_', $task);
 
 		$field = $vals['0'];
@@ -311,8 +312,8 @@ class TiendaControllerCategories extends TiendaController
 			$this->message = "";
 		}
 
-		$redirect = JRequest::getVar( 'return' ) ?
-		base64_decode( JRequest::getVar( 'return' ) ) : "index.php?option=com_tienda&controller=categories&task=selectproducts&tmpl=component&id=".$id;
+		$redirect = $this->input->get( 'return', '', 'base64' ) ?
+		base64_decode( $this->input->get( 'return', '', 'base64' ) ) : "index.php?option=com_tienda&controller=categories&task=selectproducts&tmpl=component&id=".$id;
 		$redirect = JRoute::_( $redirect, false );
 
 		$this->setRedirect( $redirect, $this->message, $this->messagetype );
@@ -325,7 +326,7 @@ class TiendaControllerCategories extends TiendaController
 	function recreateThumbs(){
 			
 		$per_step = 100;
-		$from_id = JRequest::getInt('from_id', 0);
+		$from_id = $this->input->getInt('from_id', 0);
 		$to =  $from_id + $per_step;
 			
 		Tienda::load( 'TiendaHelperCategory', 'helpers.category' );

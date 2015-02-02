@@ -193,7 +193,8 @@ class TiendaControllerOrders extends TiendaController
 		{
 			$row->checkin();
 		}
-		$task = JRequest::getVar( "task" );
+		
+		$task = $this->input->getCmd( 'task' );
 		$redirect = "index.php?option=com_tienda&view=orders";
 		Tienda::load( 'TiendaHelperOrder', 'helpers.order' );
 		$surrounding = TiendaHelperOrder::getSurrounding( $model->getId() );
@@ -226,7 +227,7 @@ class TiendaControllerOrders extends TiendaController
 	{
 		// clear the session variables
 
-		$user_id = JRequest::getVar( 'userid', '', 'get', 'string' );
+		$user_id = $this->input->get->getString('userid');
 		if (empty($user_id))
 		{
 			$redirect = 'index.php?option=com_tienda&view=users';
@@ -235,8 +236,8 @@ class TiendaControllerOrders extends TiendaController
 		}
 		else
 		{
-			JRequest::setVar( 'hidemainmenu', '1' );
-			JRequest::setVar( 'layout', 'form' );
+			$this->input->set( 'hidemainmenu', '1' );
+			$this->input->set( 'layout', 'form' );
 			parent::display();
 		}
 	}
@@ -281,8 +282,8 @@ class TiendaControllerOrders extends TiendaController
 	function addProducts()
 	{
 		// get the posted variables
-		$cids = JRequest::getVar('cid', array(0), 'request', 'array');
-		$quantity = JRequest::getVar('quantity', array(0), 'request', 'array');
+		$cids = $this->input->request->get('cid', array(0), 'array');
+		$quantity = $this->input->request->get('quantity', array(0), 'array');
 
 		// get the session variables
 		$order_products = $this->getSessionVariable('order_products', array());
@@ -325,7 +326,7 @@ class TiendaControllerOrders extends TiendaController
 		$this->setSessionVariable('order_quantities', $order_quantities);
 
 		// set the close window variable so the view closes the lightbox
-		JRequest::setVar('windowtask', 'close');
+		$this->input->set('windowtask', 'close');
 
 		$model = $this->getModel( $this->get('suffix') );
 		$view = $this->getView( 'orders', 'html' );
@@ -383,7 +384,7 @@ class TiendaControllerOrders extends TiendaController
 	function updateProductQuantities()
 	{
 		// get elements from post
-		$elements = json_decode( preg_replace('/[\n\r]+/', '\n', JRequest::getVar( 'elements', '', 'post', 'string' ) ) );
+		$elements = json_decode( preg_replace('/[\n\r]+/', '\n', $this->input->post->getString( 'elements' ) ) );
 		// convert elements to array that can be binded
 		Tienda::load( 'TiendaHelperBase', 'helpers._base' );
 		$values = TiendaHelperBase::elementsToArray( $elements );
@@ -423,7 +424,7 @@ class TiendaControllerOrders extends TiendaController
 	function removeProducts()
 	{
 		// get elements from post
-		$elements = json_decode( preg_replace('/[\n\r]+/', '\n', JRequest::getVar( 'elements', '', 'post', 'string' ) ) );
+		$elements = json_decode( preg_replace('/[\n\r]+/', '\n', $this->input->post->getString( 'elements' ) ) );
 		// convert elements to array that can be binded
 		Tienda::load( 'TiendaHelperBase', 'helpers._base' );
 		$values = TiendaHelperBase::elementsToArray( $elements );
@@ -514,7 +515,7 @@ class TiendaControllerOrders extends TiendaController
 	function getOrderTotals()
 	{
 		// get elements from post
-		$elements = json_decode( preg_replace('/[\n\r]+/', '\n', JRequest::getVar( 'elements', '', 'post', 'string' ) ) );
+		$elements = json_decode( preg_replace('/[\n\r]+/', '\n', $this->input->post->getString( 'elements' ) ) );
 
 		// convert elements to array that can be binded
 		Tienda::load( 'TiendaHelperBase', 'helpers._base' );
@@ -741,7 +742,7 @@ class TiendaControllerOrders extends TiendaController
 	 */
 	function save()
 	{
-		$values = JRequest::get('post');
+		$values = $this->input->getArray($_POST);
 
 		// get the order object so we can populate it
 		$order = $this->_order; // a TableOrders object (see constructor)
@@ -866,7 +867,7 @@ class TiendaControllerOrders extends TiendaController
 		$this->setSessionVariable('order_quantities', array());
 
 		$redirect = "index.php?option=com_tienda";
-		$task = JRequest::getVar('task');
+		$task = $this->input->getCmd('task');
 		switch ($task)
 		{
 			case "savenew":
@@ -923,7 +924,7 @@ class TiendaControllerOrders extends TiendaController
 		$row->order_state_id = $order->order_state_id;
 
 		$row->notify_customer = '1';
-		$row->comments = JRequest::getVar('order_history_comments', '', 'post');
+		$row->comments = $this->input->post->getString('order_history_comments');
 
 		if (!$row->save())
 		{
@@ -1026,9 +1027,9 @@ class TiendaControllerOrders extends TiendaController
 		$model  = $this->getModel( $this->get('suffix') );
 		$row = $model->getTable();
 		$row->load( $model->getId() );
-		$row->order_state_id = JRequest::getVar('new_orderstate_id');
+		$row->order_state_id = $this->input->get('new_orderstate_id');
 
-		$completed_tasks = JRequest::getVar('completed_tasks');
+		$completed_tasks = $this->input->get('completed_tasks');
 			
 
 		if ($completed_tasks == "on" && empty($row->completed_tasks) )
@@ -1047,8 +1048,8 @@ class TiendaControllerOrders extends TiendaController
 			$history = JTable::getInstance('OrderHistory', 'TiendaTable');
 			$history->order_id             = $row->order_id;
 			$history->order_state_id       = $row->order_state_id;
-			$history->notify_customer      = JRequest::getVar('new_orderstate_notify');
-			$history->comments             = JRequest::getVar('new_orderstate_comments');
+			$history->notify_customer      = $this->input->get('new_orderstate_notify');
+			$history->comments             = $this->input->getString('new_orderstate_comments');
 
 			if (!$history->save())
 			{
@@ -1082,14 +1083,14 @@ class TiendaControllerOrders extends TiendaController
 	 */
 	function delete()
 	{
-		$confirmdelete = JRequest::getInt('confirmdelete');
+		$confirmdelete = $this->input->getInt('confirmdelete');
 		if (!empty($confirmdelete))
 		{
 			parent::delete();
 		}
 		else
 		{
-			$cids = JRequest::getVar('cid', array(0), 'request', 'array');
+			$cids = $this->input->request->get('cid', array(0), 'array');
 
 			// select only the ids from cid
 			$model  = $this->getModel( $this->get('suffix') );
@@ -1119,8 +1120,8 @@ class TiendaControllerOrders extends TiendaController
 	 * @return void
 	 */
 	function batchedit()
-	{
-		$cids = JRequest::getVar('cid', array(0), 'request', 'array');
+	{		
+		$cids = $this->input->request->get('cid', array(0), 'array');
 			
 		// select only the ids from cid
 		$model 	= $this->getModel( $this->get('suffix') );
@@ -1151,11 +1152,11 @@ class TiendaControllerOrders extends TiendaController
 		$model 	= $this->getModel( $this->get('suffix') );
 
 		// Get the list of selected items and their selected params
-		$cids 	= JRequest::getVar('cid', array (0), 'post', 'array');
-		$sendMails = JRequest::getVar('new_orderstate_notify', array (0), 'post', 'array');
-		$completeTasks = JRequest::getVar('completed_tasks', array (0), 'post', 'array');
-		$states = JRequest::getVar('new_orderstate_id', array (0), 'post', 'array');
-		$comments = JRequest::getVar('new_orderstate_comments', array (0), 'post', 'array');
+		$cids = $this->input->post->get('cid', array (0), 'array');
+		$sendMails = $this->input->post->get('new_orderstate_notify', array (0), 'array');
+		$completeTasks = $this->input->post->get('completed_tasks', array (0), 'array');
+		$states = $this->input->post->get('new_orderstate_id', array (0), 'array');
+		$comments = $this->input->post->get('new_orderstate_comments', array (0), 'array');
 
 		// for the updation
 		$counter=0;
@@ -1254,7 +1255,7 @@ class TiendaControllerOrders extends TiendaController
 	 */
 	function editAddresses()
 	{
-		JRequest::setVar('layout', 'form_addresses' );
+		$this->input->set('layout', 'form_addresses' );
 		parent::display();
 	}
 
@@ -1265,7 +1266,7 @@ class TiendaControllerOrders extends TiendaController
 	 */
 	function closeEditAddresses()
 	{
-		$order_id = JRequest::getInt('id');
+		$order_id = $this->input->getInt('id');
 		$redirect = "index.php?option=com_tienda&view=orders";
 		$redirect .= "&task=view&id=" . $order_id;
 		$this->redirect = $redirect;
@@ -1280,7 +1281,7 @@ class TiendaControllerOrders extends TiendaController
 	function saveAddresses()
 	{
 		$redirect = "index.php?option=com_tienda&view=orders";
-		$order_id = JRequest::getInt('id');
+		$order_id = $this->input->getInt('id');
 	  
 		JTable::addIncludePath( JPATH_ADMINISTRATOR . '/components/com_tienda/tables' );
 		$orderinfo = JTable::getInstance('OrderInfo', 'TiendaTable');
@@ -1294,7 +1295,7 @@ class TiendaControllerOrders extends TiendaController
 			return;
 		}
 
-		$post = JRequest::get('post');
+		$post = $this->input->getArray($_POST);		
 		$orderinfo->bind($post);
 
 		// do the countries and zones names
@@ -1330,7 +1331,7 @@ class TiendaControllerOrders extends TiendaController
 
 	function updateStatusTextarea()
 	{
-		$order_state_selected = JRequest::getInt('orderstate_selected');
+		$order_state_selected = $this->input->getInt('orderstate_selected');
 
 		$model = JModel::getInstance( 'OrderStates', 'TiendaModel' );
 		$model->setId( $order_state_selected );

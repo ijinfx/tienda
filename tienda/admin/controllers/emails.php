@@ -31,7 +31,7 @@ class TiendaControllerEmails extends TiendaController
 	 */
 	function edit($cachable=false, $urlparams = false)
 	{
-        $id = JRequest::getVar('id', 'en-GB');
+        $id = $this->input->getCmd('id', 'en-GB');
         
         $view   = $this->getView( $this->get('suffix'), 'html' );
         $model  = $this->getModel( $this->get('suffix') );
@@ -39,7 +39,7 @@ class TiendaControllerEmails extends TiendaController
         $model->setId( $id );
         $row = $model->getItem( $id, true );
         
-        JRequest::setVar( 'hidemainmenu', '1' );
+        $this->input->set( 'hidemainmenu', '1' );
         $view->setLayout( 'form' );
         $view->setModel( $model, true );
         $view->assign( 'row', $row );
@@ -61,8 +61,8 @@ class TiendaControllerEmails extends TiendaController
 	 */
 	function save()
 	{
-		$id = JRequest::getVar('id', 'en-GB');
-		$temp_values = JRequest::get('post', '4');
+		$id = $this->input->getCmd('id', 'en-GB');
+		$temp_values = $this->input->get($_POST);
 		
 		$model = $this->getModel('Emails', 'TiendaModel');
 		
@@ -103,7 +103,7 @@ class TiendaControllerEmails extends TiendaController
 		
 		$model->clearCache();
 
-		$task = JRequest::getVar('task');
+		$task = $this->input->getCmd('task');
         $redirect = "index.php?option=com_tienda";
             
         switch ($task)

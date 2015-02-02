@@ -57,8 +57,8 @@ class TiendaControllerProductComments extends TiendaController
 		$model 	= $this->getModel( $this->get('suffix') );
 		$row = $model->getTable();
 	    $row->load( $model->getId() );
-	    $row->bind( JRequest::get('POST') );
-	   	$row->user_name = JRequest::getString( 'user_id_name_hidden' ); 
+	    $row->bind( $this->input->getArray($_POST) );
+	   	$row->user_name = $this->input->getString( 'user_id_name_hidden' ); 
 	  
 	   if ( $row->save() ) 
 		{
@@ -73,7 +73,7 @@ class TiendaControllerProductComments extends TiendaController
 			$this->message 		= JText::_('COM_TIENDA_SAVE_FAILED')." - ".$row->getError();
 		}
 		$redirect = "index.php?option=com_tienda";
-    	$task = JRequest::getVar('task');
+    	$task = $this->input->getCmd('task');
     	switch ($task)
     	{
     		case "savenew":

@@ -93,7 +93,7 @@ class TiendaControllerProducts extends TiendaController
 		{
 			$row->checkin();
 		}
-		$task = JRequest::getVar( "task" );
+		$task = $this->input->getCmd( "task" );
 		$redirect = "index.php?option=com_tienda&view=products";
 		Tienda::load( "TiendaHelperProduct", 'helpers.product' );
 		$surrounding = TiendaHelperProduct::getSurrounding( $model->getId() );
@@ -122,14 +122,14 @@ class TiendaControllerProducts extends TiendaController
 	 */
 	function save()
 	{
-		$task = JRequest::getVar('task');
+		$task = $this->input->getCmd('task');
 		$model 	= $this->getModel( $this->get('suffix') );
         $isSaveAs = false;
 		$row = $model->getTable();
 		$row->load( $model->getId() );
-		$row->bind( JRequest::get('POST') );
-		$row->product_description = JRequest::getVar( 'product_description', '', 'post', 'string', JREQUEST_ALLOWRAW);
-		$row->product_description_short = JRequest::getVar( 'product_description_short', '', 'post', 'string', JREQUEST_ALLOWRAW);
+		$row->bind( $this->input->getArray($_POST) );
+		$row->product_description = $this->input->post->getString( 'product_description' );
+		$row->product_description_short = $this->input->post->getString( 'product_description_short' );
 
 		// set the id as 0 for new entry
 		if ( $task == "save_as" )
@@ -138,10 +138,10 @@ class TiendaControllerProducts extends TiendaController
 			// load WITHOUT EAV! otherwise the save will fail
 			$row = $model->getTable();
 			$row->load( $model->getId(), true, false );
-			$row->bind( JRequest::get('POST') );
-			$row->product_description = JRequest::getVar( 'product_description', '', 'post', 'string', JREQUEST_ALLOWRAW);
-			$row->product_description_short = JRequest::getVar( 'product_description_short', '', 'post', 'string', JREQUEST_ALLOWRAW);
-			
+			$row->bind( $this->input->getArray($_POST) );
+			$row->product_description = $this->input->post->getString( 'product_description' );
+			$row->product_description_short = $this->input->post->getString( 'product_description_short' );
+						
 		    $isSaveAs = true;
 			$oldProductImagePath = $row->getImagePath();
 			$pk = $row->getKeyName();
@@ -156,8 +156,8 @@ class TiendaControllerProducts extends TiendaController
 		}
 		$row->_isNew = empty($row->product_id);
 
-		$fieldname = 'product_full_image_new';
-		$userfiles = JRequest::getVar( $fieldname, '', 'files', 'array' );
+		$fieldname = 'product_full_image_new';		
+		$userfiles = $this->input->files->get($fieldname, '', 'array');
 
 		// save the integrations
 		$row = $this->prepareParameters( $row );
@@ -188,7 +188,7 @@ class TiendaControllerProducts extends TiendaController
 				// set price if new or no prices set
 				$price = JTable::getInstance( 'Productprices', 'TiendaTable' );
 				$price->product_id = $row->id;
-				$price->product_price = JRequest::getVar( 'product_price' );
+				$price->product_price = $this->input->getString( 'product_price' );
 				$price->group_id = Tienda::getInstance()->get('default_user_group', '1');
 				if (!$price->save())
 				{
@@ -203,7 +203,7 @@ class TiendaControllerProducts extends TiendaController
 				// set category
 				$category = JTable::getInstance( 'Productcategories', 'TiendaTable' );
 				$category->product_id = $row->id;
-				$category->category_id = JRequest::getVar( 'category_id' );
+				$category->category_id = $this->input->getInt( 'category_id' );
 				if (!$category->save())
 				{
 					$this->messagetype 	= 'notice';
@@ -213,7 +213,7 @@ class TiendaControllerProducts extends TiendaController
 				// save default quantity
 				$quantity = JTable::getInstance( 'Productquantities', 'TiendaTable' );
 				$quantity->product_id = $row->id;
-				$quantity->quantity = JRequest::getInt( 'product_quantity' );
+				$quantity->quantity = $this->input->getInt( 'product_quantity' );
 				if (!$quantity->save())
 				{
 					$this->messagetype  = 'notice';
@@ -525,22 +525,22 @@ class TiendaControllerProducts extends TiendaController
 		// this row's product_params has already been set from the textarea's POST
 		// so we need to add to it
 		$params = new DSCParameter( trim($row->product_params) );
-		$params->set( 'amigos_commission_override', JRequest::getVar('amigos_commission_override') );
-		$params->set( 'billets_ticket_limit_increase', JRequest::getVar('billets_ticket_limit_increase') );
-		$params->set( 'billets_ticket_limit_exclusion', JRequest::getVar('billets_ticket_limit_exclusion') );
-		$params->set( 'billets_hour_limit_increase', JRequest::getVar('billets_hour_limit_increase') );
-		$params->set( 'billets_hour_limit_exclusion', JRequest::getVar('billets_hour_limit_exclusion') );
-		$params->set( 'juga_group_csv_add', JRequest::getVar('juga_group_csv_add') );
-		$params->set( 'juga_group_csv_remove', JRequest::getVar('juga_group_csv_remove') );
-        $params->set( 'juga_group_csv_add_expiration', JRequest::getVar('juga_group_csv_add_expiration') );
-        $params->set( 'juga_group_csv_remove_expiration', JRequest::getVar('juga_group_csv_remove_expiration') );
-		$params->set( 'core_user_change_gid', JRequest::getVar('core_user_change_gid') );
-		$params->set( 'core_user_new_gid', JRequest::getVar('core_user_new_gid') );
-        $params->set( 'ambrasubs_type_id', JRequest::getVar('ambrasubs_type_id') );
-        $params->set( 'hide_quantity_input', JRequest::getVar('param_hide_quantity_input') );
-        $params->set( 'default_quantity', JRequest::getVar('param_default_quantity') );
-        $params->set( 'hide_quantity_cart', JRequest::getVar('param_hide_quantity_cart') );
-        $params->set( 'show_product_compare', JRequest::getVar('param_show_product_compare', '1') );
+		$params->set( 'amigos_commission_override', $this->input->get('amigos_commission_override') );
+		$params->set( 'billets_ticket_limit_increase', $this->input->get('billets_ticket_limit_increase') );
+		$params->set( 'billets_ticket_limit_exclusion', $this->input->get('billets_ticket_limit_exclusion') );
+		$params->set( 'billets_hour_limit_increase', $this->input->get('billets_hour_limit_increase') );
+		$params->set( 'billets_hour_limit_exclusion', $this->input->get('billets_hour_limit_exclusion') );
+		$params->set( 'juga_group_csv_add', $this->input->get('juga_group_csv_add') );
+		$params->set( 'juga_group_csv_remove', $this->input->get('juga_group_csv_remove') );
+        $params->set( 'juga_group_csv_add_expiration', $this->input->get('juga_group_csv_add_expiration') );
+        $params->set( 'juga_group_csv_remove_expiration', $this->input->get('juga_group_csv_remove_expiration') );
+		$params->set( 'core_user_change_gid', $this->input->get('core_user_change_gid') );
+		$params->set( 'core_user_new_gid', $this->input->get('core_user_new_gid') );
+        $params->set( 'ambrasubs_type_id', $this->input->get('ambrasubs_type_id') );
+        $params->set( 'hide_quantity_input', $this->input->get('param_hide_quantity_input') );
+        $params->set( 'default_quantity', $this->input->get('param_default_quantity') );
+        $params->set( 'hide_quantity_cart', $this->input->get('param_hide_quantity_cart') );
+        $params->set( 'show_product_compare', $this->input->get('param_show_product_compare', '1') );
                 
 		$row->product_params = trim( $params->toString() );
 		return $row;
@@ -594,7 +594,7 @@ class TiendaControllerProducts extends TiendaController
 			$model->setState( $key, $value );
 		}
 
-		$id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
+		$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));
 		$row = $model->getTable( 'products' );
 		$row->load( $id );
 
@@ -617,7 +617,7 @@ class TiendaControllerProducts extends TiendaController
 	 */
 	function viewGallery()
 	{
-		$id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
+		$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));
 		$row = JTable::getInstance('Products', 'TiendaTable');
 		$row->load( $id );
 
@@ -655,9 +655,9 @@ class TiendaControllerProducts extends TiendaController
 		$model = $this->getModel($this->get('suffix'));
 		$row = $model->getTable();
 
-		$id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
-		$cids = JRequest::getVar('cid', array (0), 'request', 'array');
-		$task = JRequest::getVar( 'task' );
+		$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));
+		$cids = $this->input->request->get('cid', array (0), 'array');
+		$task = $this->input->getCmd( 'task' );
 		$vals = explode('_', $task);
 
 		$field = $vals['0'];
@@ -752,8 +752,8 @@ class TiendaControllerProducts extends TiendaController
 			$this->message = "";
 		}
 
-		$redirect = JRequest::getVar( 'return' ) ?
-		base64_decode( JRequest::getVar( 'return' ) ) : "index.php?option=com_tienda&view=products&task=selectcategories&tmpl=component&id=".$id;
+		$redirect = $this->input->get( 'return', '', 'base64' ) ?
+		base64_decode( $this->input->get( 'return', '', 'base64' ) ) : "index.php?option=com_tienda&view=products&task=selectcategories&tmpl=component&id=".$id;
 		$redirect = JRoute::_( $redirect, false );
 
 		$this->setRedirect( $redirect, $this->message, $this->messagetype );
@@ -814,8 +814,8 @@ class TiendaControllerProducts extends TiendaController
 		$model = $this->getModel('productquantities');
 		$row = $model->getTable();
 
-		$cids = JRequest::getVar('cid', array(0), 'request', 'array');
-		$quantities = JRequest::getVar('quantity', array(0), 'request', 'array');
+		$cids = $this->input->request->get('cid', array(0), 'array');
+		$quantities = $this->input->request->get('quantity', array(0), 'array');
 
 		foreach (@$cids as $cid)
 		{
@@ -891,13 +891,13 @@ class TiendaControllerProducts extends TiendaController
 		$model 	= $this->getModel( $this->get('suffix') );
 
 		$row = $model->getTable();
-		$row->product_id = JRequest::getVar( 'id' );
-		$row->product_price = JRequest::getVar( 'createprice_price' );
-		$row->product_price_startdate = JRequest::getVar( 'createprice_date_start' );
-		$row->product_price_enddate = JRequest::getVar( 'createprice_date_end' );
-		$row->price_quantity_start = JRequest::getVar( 'createprice_quantity_start' );
-		$row->price_quantity_end = JRequest::getVar( 'createprice_quantity_end' );
-		$row->group_id = JRequest::getVar( 'createprice_group_id' );
+		$row->product_id = $this->input->getInt( 'id' );
+		$row->product_price = $this->input->get( 'createprice_price' );
+		$row->product_price_startdate = $this->input->get( 'createprice_date_start' );
+		$row->product_price_enddate = $this->input->get( 'createprice_date_end' );
+		$row->price_quantity_start = $this->input->get( 'createprice_quantity_start' );
+		$row->price_quantity_end = $this->input->get( 'createprice_quantity_end' );
+		$row->group_id = $this->input->getInt( 'createprice_group_id' );
 		
 		if ( $row->save() )
 		{
@@ -932,13 +932,13 @@ class TiendaControllerProducts extends TiendaController
 		$model = $this->getModel('productprices');
 		$row = $model->getTable();
 
-		$cids = JRequest::getVar('cid', array(0), 'request', 'array');
-		$prices = JRequest::getVar('price', array(0), 'request', 'array');
-		$date_starts = JRequest::getVar('date_start', array(0), 'request', 'array');
-		$date_ends = JRequest::getVar('date_end', array(0), 'request', 'array');
-		$quantity_starts = JRequest::getVar('quantity_start', array(0), 'request', 'array');
-		$quantity_ends = JRequest::getVar('quantity_end', array(0), 'request', 'array');
-		$user_groups = JRequest::getVar('price_group_id', array(0), 'request', 'array');
+		$cids = $this->input->request->get('cid', array(0), 'array');
+		$prices = $this->input->request->get('price', array(0), 'array');
+		$date_starts = $this->input->request->get('date_start', array(0), 'array');
+		$date_ends = $this->input->request->get('date_end', array(0), 'array');
+		$quantity_starts = $this->input->request->get('quantity_start', array(0), 'array');
+		$quantity_ends = $this->input->request->get('quantity_end', array(0), 'array');
+		$user_groups = $this->input->request->get('price_group_id', array(0), 'array');
 		
 		foreach (@$cids as $cid)
 		{
@@ -1020,10 +1020,10 @@ class TiendaControllerProducts extends TiendaController
 		$model 	= $this->getModel( $this->get('suffix') );
 
 		$row = $model->getTable();
-		$row->product_id = JRequest::getVar( 'id' );
-		$row->issue_num = JRequest::getVar( 'issue_num' );
-		$row->volume_num = JRequest::getVar( 'volume_num' );
-		$row->publishing_date = JRequest::getVar( 'publishing_date'  );
+		$row->product_id = $this->input->getInt( 'id' );
+		$row->issue_num = $this->input->get( 'issue_num' );
+		$row->volume_num = $this->input->get( 'volume_num' );
+		$row->publishing_date = $this->input->get( 'publishing_date'  );
 		
 		if ( $row->save() )
 		{
@@ -1058,10 +1058,10 @@ class TiendaControllerProducts extends TiendaController
 		$model = $this->getModel('productissues');
 		$row = $model->getTable();
 
-		$cids = JRequest::getVar('cid', array(0), 'request', 'array');
-		$issues_num = JRequest::getVar( 'issues_num', array(0), 'request', 'array' );
-		$volumes_num = JRequest::getVar( 'volumes_num', array(0), 'request', 'array' );
-		$publishing_dates = JRequest::getVar( 'publishing_dates', array(0), 'request', 'array' );
+		$cids = $this->input->request->get('cid', array(0), 'array');
+		$issues_num = $this->input->request->get( 'issues_num', array(0), 'array' );
+		$volumes_num = $this->input->request->get( 'volumes_num', array(0), 'array' );
+		$publishing_dates = $this->input->request->get( 'publishing_dates', array(0), 'array' );
 				
 		foreach (@$cids as $cid)
 		{
@@ -1143,8 +1143,8 @@ class TiendaControllerProducts extends TiendaController
 		$model  = $this->getModel( $this->get('suffix') );
 
 		$row = $model->getTable();
-		$row->product_id = JRequest::getVar( 'id' );
-		$row->productattribute_name = JRequest::getVar( 'createproductattribute_name' );
+		$row->product_id = $this->input->getInt( 'id' );
+		$row->productattribute_name = $this->input->getString( 'createproductattribute_name' );
         $row->ordering = '99';
         
 		if ( $row->save() )
@@ -1180,10 +1180,10 @@ class TiendaControllerProducts extends TiendaController
 		$model = $this->getModel('productattributes');
 		$row = $model->getTable();
 
-		$cids = JRequest::getVar('cid', array(0), 'request', 'array');
-		$name = JRequest::getVar('name', array(0), 'request', 'array');
-		$parent = JRequest::getVar('attribute_parent', array(0), 'request', 'array');
-		$ordering = JRequest::getVar('ordering', array(0), 'request', 'array');
+		$cids = $this->input->request->get('cid', array(0), 'array');
+		$name = $this->input->request->get('name', array(0), 'array');
+		$parent = $this->input->request->get('attribute_parent', array(0), 'array');
+		$ordering = $this->input->request->get('ordering', array(0), 'array');
 
 		foreach (@$cids as $cid)
 		{
@@ -1301,14 +1301,14 @@ class TiendaControllerProducts extends TiendaController
 		$model  = $this->getModel( $this->get('suffix') );
 
 		$row = $model->getTable();
-		$row->productattribute_id = JRequest::getVar( 'id' );
-		$row->productattributeoption_name = JRequest::getVar( 'createproductattributeoption_name' );
-		$row->productattributeoption_price = JRequest::getVar( 'createproductattributeoption_price' );
-		$row->productattributeoption_code = JRequest::getVar( 'createproductattributeoption_code' );
-		$row->productattributeoption_prefix = JRequest::getVar( 'createproductattributeoption_prefix' );
-		$row->productattributeoption_weight = JRequest::getVar( 'createproductattributeoption_weight' );
-		$row->productattributeoption_prefix_weight = JRequest::getVar( 'createproductattributeoption_prefix_weight' );
-		$row->is_blank = JRequest::getVar( 'createproductattributeoption_blank' );
+		$row->productattribute_id = $this->input->getInt( 'id' );
+		$row->productattributeoption_name = $this->input->getString( 'createproductattributeoption_name' );
+		$row->productattributeoption_price = $this->input->getString( 'createproductattributeoption_price' );
+		$row->productattributeoption_code = $this->input->getString( 'createproductattributeoption_code' );
+		$row->productattributeoption_prefix = $this->input->getString( 'createproductattributeoption_prefix' );
+		$row->productattributeoption_weight = $this->input->getString( 'createproductattributeoption_weight' );
+		$row->productattributeoption_prefix_weight = $this->input->getString( 'createproductattributeoption_prefix_weight' );
+		$row->is_blank = $this->input->getString( 'createproductattributeoption_blank' );
 		$row->ordering = '99';
         
 		if ( $row->save() )
@@ -1341,10 +1341,10 @@ class TiendaControllerProducts extends TiendaController
 		$model  = $this->getModel( $this->get('suffix') );
 
 		$row = $model->getTable();
-		$row->productattributeoption_id = JRequest::getVar( 'id' );
-		$row->productattributeoptionvalue_field = JRequest::getVar( 'createproductattributeoptionvalue_field' );
-		$row->productattributeoptionvalue_operator = JRequest::getVar( 'createproductattributeoptionvalue_operator' );
-		$row->productattributeoptionvalue_value = JRequest::getVar( 'createproductattributeoptionvalue_value' );
+		$row->productattributeoption_id = $this->input->getInt( 'id' );
+		$row->productattributeoptionvalue_field = $this->input->getString( 'createproductattributeoptionvalue_field' );
+		$row->productattributeoptionvalue_operator = $this->input->getString( 'createproductattributeoptionvalue_operator' );
+		$row->productattributeoptionvalue_value = $this->input->getString( 'createproductattributeoptionvalue_value' );
 		
 		if ( $row->save() )
 		{
@@ -1379,16 +1379,16 @@ class TiendaControllerProducts extends TiendaController
 		$model = $this->getModel('productattributeoptions');
 		$row = $model->getTable();
 
-		$cids = JRequest::getVar('cid', array(0), 'request', 'array');
-		$name = JRequest::getVar('name', array(0), 'request', 'array');
-		$prefix = JRequest::getVar('prefix', array(0), 'request', 'array');
-		$price = JRequest::getVar('price', array(0), 'request', 'array');
-		$prefix_weight = JRequest::getVar('prefix_weight', array(0), 'request', 'array');
-		$weight = JRequest::getVar('weight', array(0), 'request', 'array');
-		$code = JRequest::getVar('code', array(0), 'request', 'array');
-		$parent = JRequest::getVar('attribute_parent', array(0), 'request', 'array');
-		$ordering = JRequest::getVar('ordering', array(0), 'request', 'array');
-		$blank = JRequest::getVar( 'blank', array( 0 ), 'request', 'array' );
+		$cids = $this->input->request->get('cid', array(0), 'array');
+		$name = $this->input->request->get('name', array(0), 'array');
+		$prefix = $this->input->request->get('prefix', array(0), 'array');
+		$price = $this->input->request->get('price', array(0), 'array');
+		$prefix_weight = $this->input->request->get('prefix_weight', array(0), 'array');
+		$weight = $this->input->request->get('weight', array(0), 'array');
+		$code = $this->input->request->get('code', array(0), 'array');
+		$parent = $this->input->request->get('attribute_parent', array(0), 'array');
+		$ordering = $this->input->request->get('ordering', array(0), 'array');
+		$blank = $this->input->request->get( 'blank', array( 0 ), 'array' );
 		
 		foreach (@$cids as $cid)
 		{
@@ -1444,11 +1444,11 @@ class TiendaControllerProducts extends TiendaController
 		$model = $this->getModel('productattributeoptionvalues');
 		$row = $model->getTable();
 
-		$id = JRequest::getInt('id', 0, 'request' );
-		$cids = JRequest::getVar('cid', array(0), 'request', 'array');
-		$field = JRequest::getVar('field', array(0), 'request', 'array');
-		$operator = JRequest::getVar('operator', array(0), 'request', 'array');
-		$value = JRequest::getVar('value', array(0), 'request', 'array');
+		$id = $this->input->request->getInt('id', 0 );
+		$cids = $this->input->request->get('cid', array(0), 'array');
+		$field = $this->input->request->get('field', array(0), 'array');
+		$operator = $this->input->request->get('operator', array(0), 'array');
+		$value = $this->input->request->get('value', array(0), 'array');
 		
 		foreach (@$cids as $cid)
 		{
@@ -1532,16 +1532,16 @@ class TiendaControllerProducts extends TiendaController
 		$model  = $this->getModel( $this->get('suffix') );
 
 		$row = $model->getTable();
-		$row->product_id = JRequest::getVar( 'id' );
-		$row->productfile_name = JRequest::getVar( 'createproductfile_name' );
-		$row->productfile_enabled = JRequest::getVar( 'createproductfile_enabled' );
-		$row->purchase_required = JRequest::getVar( 'createproductfile_purchaserequired' );
-		$row->max_download = JRequest::getInt( 'createproductfile_max_download', -1 );
+		$row->product_id = $this->input->getInt( 'id' );
+		$row->productfile_name = $this->input->getString( 'createproductfile_name' );
+		$row->productfile_enabled = $this->input->get( 'createproductfile_enabled' );
+		$row->purchase_required = $this->input->get( 'createproductfile_purchaserequired' );
+		$row->max_download = $this->input->getInt( 'createproductfile_max_download', -1 );
 		
 		$fieldname = 'createproductfile_file';
 		Tienda::load( "TiendaHelperProduct", 'helpers.product' );
 		$path = TiendaHelperProduct::getFilePath( $row->product_id );
-		$userfile = JRequest::getVar( $fieldname, '', 'files', 'array' );
+		$userfile = $this->input->files( $fieldname, '', 'array' );
 		if (!empty($userfile['size']))
 		{
 			if ($upload = $this->addfile( $fieldname, $path ))
@@ -1588,14 +1588,14 @@ class TiendaControllerProducts extends TiendaController
 		$this->set('suffix', 'productfiles');
 		$model  = $this->getModel( $this->get('suffix') );
 
-		$file = JRequest::getVar( 'createproductfileserver_file' );
+		$file = $this->input->get( 'createproductfileserver_file' );
 
 		$row = $model->getTable();
-		$row->product_id = JRequest::getVar( 'id' );
-		$row->productfile_name = JRequest::getVar( 'createproductfileserver_name' );
-		$row->productfile_enabled = JRequest::getVar( 'createproductfileserver_enabled' );
-		$row->purchase_required = JRequest::getVar( 'createproductfileserver_purchaserequired' );
-		$row->max_download = JRequest::getInt( 'createproductfileserver_max_download', -1 );
+		$row->product_id = $this->input->getInt( 'id' );
+		$row->productfile_name = $this->input->getString( 'createproductfileserver_name' );
+		$row->productfile_enabled = $this->input->get( 'createproductfileserver_enabled' );
+		$row->purchase_required = $this->input->get( 'createproductfileserver_purchaserequired' );
+		$row->max_download = $this->input->getInt( 'createproductfileserver_max_download', -1 );
 		
 		if(empty($row->productfile_name))
 		$row->productfile_name = $file;
@@ -1675,12 +1675,12 @@ class TiendaControllerProducts extends TiendaController
 		$model = $this->getModel('productfiles');
 		$row = $model->getTable();
 
-		$cids = JRequest::getVar('cid', array(0), 'request', 'array');
-		$name = JRequest::getVar('name', array(0), 'request', 'array');
-		$ordering = JRequest::getVar('ordering', array(0), 'request', 'array');
-		$enabled = JRequest::getVar('enabled', array(0), 'request', 'array');
-		$purchaserequired = JRequest::getVar('purchaserequired', array(0), 'request', 'array');
-		$max_download = JRequest::getVar('max_download', array(0), 'request', 'array');
+		$cids = $this->input->request->get('cid', array(0), 'array');
+		$name = $this->input->request->get('name', array(0), 'array');
+		$ordering = $this->input->request->get('ordering', array(0), 'array');
+		$enabled = $this->input->request->get('enabled', array(0), 'array');
+		$purchaserequired = $this->input->request->get('purchaserequired', array(0), 'array');
+		$max_download = $this->input->request->get('max_download', array(0), 'array');
 
 		foreach (@$cids as $cid)
 		{
@@ -1723,20 +1723,20 @@ class TiendaControllerProducts extends TiendaController
 	 */
 	function deleteImage()
 	{
-	    $format = JRequest::getCmd('format');
+	    $format = $this->input->getCmd('format');
 	    
 		Tienda::load( "TiendaHelperProduct", 'helpers.product' );
 
-		$product_id = JRequest::getInt( 'product_id', 0, 'request');
-		$image = JRequest::getVar('image', '', 'request');
+		$product_id = $this->input->request->getInt( 'product_id', 0);
+		$image = $this->input->request->get('image', '');
 		$image = html_entity_decode($image);
 
 		// Find and delete the product image
 		$helper = TiendaHelperBase::getInstance('Product', 'TiendaHelper');
 		$path = $helper->getGalleryPath($product_id);
 
-		$redirect = JRequest::getVar( 'return' ) ?
-		base64_decode( JRequest::getVar( 'return' ) ) : "index.php?option=com_tienda&view=products&task=viewGallery&id={$product_id}&tmpl=component";
+		$redirect = $this->input->get( 'return', '', 'base64' ) ?
+		base64_decode( $this->input->get( 'return', '', 'base64' ) ) : "index.php?option=com_tienda&view=products&task=viewGallery&id={$product_id}&tmpl=component";
 		$redirect = JRoute::_( $redirect, false );
 
 		// Check if the data is ok
@@ -1806,9 +1806,9 @@ class TiendaControllerProducts extends TiendaController
 	function setDefaultImage()
 	{
 		Tienda::load( "TiendaHelperProduct", 'helpers.product' );
-			
-		$product_id = JRequest::getInt( 'product_id', 0, 'request');
-		$image = JRequest::getVar('image', '', 'request');
+					
+		$product_id = $this->input->request->getInt( 'product_id', 0);
+		$image = $this->input->request->get('image', '');
 		$image = html_entity_decode($image);
 
 		// Find the product image
@@ -1850,7 +1850,7 @@ class TiendaControllerProducts extends TiendaController
 			$this->messagetype = 'notice';
 		}
 
-		$format = JRequest::getCmd('format');
+		$format = $this->input->getCmd('format');
 		if ($format == 'raw') 
 		{
 		    $html = '<img src="'.$gallery_url.'thumbs/'.$image.'" class="img-polaroid" />';
@@ -1876,9 +1876,9 @@ class TiendaControllerProducts extends TiendaController
 			
 		// this will only be if there is only 1 image per product
 		$per_step = 100;
-		$from_id = JRequest::getInt('from_id', 0);
+		$from_id = $this->input->getInt('from_id', 0);
 		$to_id =  $from_id + $per_step;
-		$done = JRequest::getInt('done', 0);
+		$done = $this->input->getInt('done', 0);
 			
 		Tienda::load( "TiendaHelperProduct", 'helpers.product' );
 		Tienda::load( 'TiendaImage', 'library.image' );
@@ -1986,7 +1986,7 @@ class TiendaControllerProducts extends TiendaController
 	{
 	    $html = '';
 	    
-	    $product_id = JRequest::getInt('product_id');
+	    $product_id = $this->input->getInt('product_id');
 	    $model = $this->getModel( $this->get('suffix') );
 	    $model->setId($product_id);
 	    if ($item = $model->getItem()) 
@@ -2012,7 +2012,7 @@ class TiendaControllerProducts extends TiendaController
 	{
 	    JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 	    
-	    $product_id = JRequest::getInt( 'product_id', 0 );
+	    $product_id = $this->input->getInt( 'product_id', 0 );
 	
 	    if ( $product_id )
 	    {

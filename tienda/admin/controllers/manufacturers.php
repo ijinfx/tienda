@@ -63,10 +63,10 @@ class TiendaControllerManufacturers extends TiendaController
 	    $model 	= $this->getModel( $this->get('suffix') );
 	    $error = false;
 	
-		$row->manufacturer_description = JRequest::getVar( 'manufacturer_description', '', 'post', 'string', JREQUEST_ALLOWRAW);
+		$row->manufacturer_description = $this->input->post->getString('manufacturer_description');
 
 		$fieldname = 'manufacturer_image_new';
-		$userfile = JRequest::getVar( $fieldname, '', 'files', 'array' );
+		$userfile = $this->input->files->get($fieldname);
 		if (!empty($userfile['size']))
 		{
 			if ($upload = $this->addfile( $fieldname ))
@@ -131,7 +131,7 @@ class TiendaControllerManufacturers extends TiendaController
 	function recreateThumbs(){
 			
 		$per_step = 100;
-		$from_id = JRequest::getInt('from_id', 0);
+		$from_id = $this->input->getInt('from_id', 0);
 		$to =  $from_id + $per_step;
 			
 		Tienda::load( 'TiendaHelperManufacturer', 'helpers.manufacturer' );

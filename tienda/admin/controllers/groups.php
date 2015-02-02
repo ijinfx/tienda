@@ -91,8 +91,8 @@ class TiendaControllerGroups extends TiendaController
 		{
 			$model->setState( $key, $value );
 		}
-
-		$id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
+		
+		$id = $this->input->get->get('id', $this->input->post->get('id', '0'));
 		$row = $model->getTable( 'groups' );
 		$model->setState( 'filter_usergroup', $id );
 		$row->load( $id );
@@ -121,10 +121,10 @@ class TiendaControllerGroups extends TiendaController
 
 		$model = $this->getModel($this->get('suffix'));
 		$row = $model->getTable();
-
-		$id = JRequest::getVar( 'id', JRequest::getVar( 'id', '0', 'post', 'int' ), 'get', 'int' );
-		$cids = JRequest::getVar('cid', array (0), 'request', 'array');
-		$task = JRequest::getVar( 'task' );
+		
+		$id = $this->input->get->getInt('id', $this->input->post->getInt('id', '0'));		
+		$cids = $this->input->get('cid', array (0), 'array');
+		$task = $this->input->getCmd( 'task' );
 		$vals = explode('_', $task);
 
 		$field = $vals['0'];
@@ -219,8 +219,8 @@ class TiendaControllerGroups extends TiendaController
 			$this->message = "";
 		}
 
-		$redirect = JRequest::getVar( 'return' ) ?
-		base64_decode( JRequest::getVar( 'return' ) ) : "index.php?option=com_tienda&controller=groups&task=selectusers&tmpl=component&id=".$id;
+		$redirect = $this->input->get( 'return', '', 'base64' ) ?
+		base64_decode( $this->input->get( 'return', '', 'base64' ) ) : "index.php?option=com_tienda&controller=groups&task=selectusers&tmpl=component&id=".$id;
 		$redirect = JRoute::_( $redirect, false );
 		$this->setRedirect( $redirect, $this->message, $this->messagetype );
 	}
