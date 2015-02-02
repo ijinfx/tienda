@@ -26,17 +26,9 @@ class plgTiendaGenericExport extends JPlugin
         $name = 'revert'; 
         $text = 'Generic Export';
         $url = JRoute::_(JURI::getInstance()->toString().'&exportFormat=csv');
-        $request = JRequest::get('request');
-        
-        if( isset( $request['option'] ) )
-        	unset( $request['option'] );
-        if( isset( $request['controller'] ) )
-        	unset( $request['controller'] );
-        if( isset( $request['boxchecked'] ) )
-        	unset( $request['boxchecked'] );
-        	
-        
-        $additional = 'exportParams='.base64_encode( json_encode( array( 'view' => $request['view'] )) );
+                
+		$view = JFactory::getApplication()->input->getCmd('view');
+        $additional = 'exportParams='.base64_encode( json_encode( array( 'view' => $view )) );
         $url = 'index.php?option=com_tienda&task=doTask&element=genericexport&elementTask=export&exportFormat=csv&'.$additional;
 
         $bar = JToolBar::getInstance('toolbar');
@@ -70,13 +62,13 @@ class plgTiendaGenericExport extends JPlugin
     
     function export()
     {
-    	Tienda::load( 'TiendaCSV', 'library.csv' );
-      $request = JRequest::get('request');
+    	Tienda::load( 'TiendaCSV', 'library.csv' );     
+	  $exportParams = JFactory::getApplication()->input->get('exportParams', '', 'BASE64');
         
       //// load the plugins
       JPluginHelper::importPlugin( 'tienda' );
       JModel::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_tienda/models');
-      $params = json_decode( base64_decode( $request['exportParams'] ) );
+      $params = json_decode( base64_decode( $exportParams ) );
       $model = JModel::getInstance($params->view,'TiendaModel');
       $list = $model->getList();
 

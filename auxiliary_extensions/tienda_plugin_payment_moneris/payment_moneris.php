@@ -102,6 +102,8 @@ class plgTiendaPayment_moneris extends TiendaPaymentPlugin
 	 */
 	function _prePayment( $data )
 	{
+		$jinput = JFactory::getApplication()->input;
+		
 		// prepare the payment form
 
 		$vars = new JObject();
@@ -114,33 +116,33 @@ class plgTiendaPayment_moneris extends TiendaPaymentPlugin
 		$vars->orderpayment_amount = $data['orderpayment_amount'];
 
 		$vars->orderpayment_type = $this->_element;
-		$vars->cardtype =JRequest::getVar("card_type");
-		$vars->cardnum = JRequest::getVar("card_number");
+		$vars->cardtype = $jinput->getString("card_type");
+		$vars->cardnum = $jinput->getString("card_number");
 
 		// converting date in the MMYY format
 
-		if( strlen(JRequest::getVar("expiration_month"))==1)
+		if( strlen($jinput->getString("expiration_month"))==1)
 		{
-			$date="0".(String)JRequest::getVar("expiration_month");
+			$date="0".(String)$jinput->getString("expiration_month");
 		}
 		else
 		{
-			$date=JRequest::getVar("expiration_month");
+			$date= $jinput->getString("expiration_month");
 		}
 
-		if( strlen(JRequest::getVar("expiration_year"))==4)
+		if( strlen($jinput->getString("expiration_year"))==4)
 		{
-			$date = $date . substr(JRequest::getVar("expiration_year"),0,2);
+			$date = $date . substr($jinput->getString("expiration_year"),0,2);
 		}
 		else {
-			$date = $date .JRequest::getVar("expiration_year");
+			$date = $date . $jinput->getString("expiration_year");
 		}
 
 		$expire_date=$this->_getFormattedCardExprDate('my',$date);
 
-		$vars->cardexp =$expire_date;
-		$vars->cardcvv = JRequest::getVar("cvv_number");
-		$vars->cardnum_last4 = substr( JRequest::getVar("card_number"), -4 );
+		$vars->cardexp = $expire_date;
+		$vars->cardcvv = $jinput->getString("cvv_number");
+		$vars->cardnum_last4 = substr( $jinput->getString("card_number"), -4 );
 		$vars->data =$data;
 			
 		// saving the productpayment_id which will use to update the Transaction fail condition
@@ -165,7 +167,7 @@ class plgTiendaPayment_moneris extends TiendaPaymentPlugin
 	function _postPayment( $data )
 	{
 		// Process the payment
-		$paction = JRequest::getVar('paction');
+		$paction = JFactory::getApplication()->input->getString('paction');
 
 		$vars = new JObject();
 
@@ -330,8 +332,8 @@ class plgTiendaPayment_moneris extends TiendaPaymentPlugin
 	 * @return HTML
 	 */
 	function _process()
-	{
-		$data = JRequest::get('post');
+	{		
+		$data = JFactory::geApplication()->input->getArray($_POST);
 		$order = JTable::getInstance('Orders', 'TiendaTable');
 		$order->load( $data['order_id'] );
 		$items = $order->getItems();

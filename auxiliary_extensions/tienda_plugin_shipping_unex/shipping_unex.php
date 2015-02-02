@@ -77,7 +77,7 @@ class plgTiendaShipping_Unex extends TiendaShippingPlugin
     		{    		
 		    	$vars = new JObject();
 		        $vars->state = $this->_getState();
-		        $id = JRequest::getInt('id', '0');
+		        $id = JFactory::getApplication()->input->getInt('id', '0');
 		        $form = array();
 		        $form['action'] = "index.php?option=com_tienda&view=shipping&task=view&id={$id}";
 		        $vars->form = $form;
@@ -102,7 +102,7 @@ class plgTiendaShipping_Unex extends TiendaShippingPlugin
     		
     		$vars = new JObject();
 	        $vars->state = $this->_getState();
-	        $id = JRequest::getInt('id', '0');
+	        $id = JFactory::getApplication()->input->getInt('id', '0');
 	        $form = array();
 	        $form['action'] = "index.php?option=com_tienda&view=shipping&task=view&id={$id}";
 	        $vars->form = $form;
@@ -157,7 +157,7 @@ class plgTiendaShipping_Unex extends TiendaShippingPlugin
     
     function fetchStickersAjax()
     {
-    	$order_id = JRequest::getInt('order_id');
+    	$order_id = JFactory::getApplication()->input->getInt('order_id');
     	$model = JModel::getInstance('Orders', 'TiendaModel');
     	$model->setId($order_id);
     	
@@ -308,8 +308,8 @@ class plgTiendaShipping_Unex extends TiendaShippingPlugin
     function downloadFile() 
     {
         $user = JFactory::getUser();
-        $order_id = intval( JRequest::getvar( 'id', '', 'request', 'int' ) );
-        $filename = JRequest::getvar( 'filename', '', 'request', 'string' );
+        $order_id = JFactory::getApplication()->input->getInt('id');
+        $filename = JFactory::getApplication()->input->getString( 'filename' );
         $path = $this->getStickerPath($order_id, false);
         
         // log and download
@@ -483,7 +483,7 @@ class plgTiendaShipping_Unex extends TiendaShippingPlugin
     function sendShipmentAjax()
     {
     	$model = JModel::getInstance('Orders', 'TiendaModel');
-    	$model->setId( JRequest::getInt('order_id') );
+    	$model->setId( JFactory::getApplication()->input->getInt('order_id') );
     	$order = $model->getItem();
     	
  		if($this->sendShipment($order))
@@ -662,7 +662,7 @@ class plgTiendaShipping_Unex extends TiendaShippingPlugin
         
         $vars = new JObject();
         $vars->state = $this->_getState();
-        $id = JRequest::getInt('id', '0');
+        $id = JFactory::getApplication()->input->getInt('id', '0');
         $form = array();
         $form['action'] = "index.php?option=com_tienda&view=shipping&task=view&id={$id}";
         $vars->form = $form;

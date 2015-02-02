@@ -114,7 +114,7 @@ class plgTiendaShipping_Dhl extends TiendaShippingPlugin
         
         $vars = new JObject();
         $vars->state = $this->_getState();
-        $id = JRequest::getInt('id', '0');
+        $id = JFactory::getApplication()->input->getInt('id', '0');
         $form = array();
         $form['action'] = "index.php?option=com_tienda&view=shipping&task=view&id={$id}";
         $vars->form = $form;

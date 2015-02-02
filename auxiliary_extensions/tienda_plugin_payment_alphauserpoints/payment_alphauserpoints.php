@@ -231,7 +231,7 @@ class plgTiendaPayment_alphauserpoints extends TiendaPaymentPlugin
 		$userpoints = $this->getUserpoints();
 		
 		JLoader::import( 'com_tienda.library.json', JPATH_ADMINISTRATOR.'/components' );
-		$guest = JRequest::getVar( 'guest', '0');
+		$guest = JFactory::getApplication()->input->get( 'guest', '0');
 		
         if( $amount_points > $userpoints && $guest == '1' )
         {

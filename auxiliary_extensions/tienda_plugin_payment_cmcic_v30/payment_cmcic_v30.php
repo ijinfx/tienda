@@ -161,15 +161,18 @@ class plgTiendaPayment_cmcic_v30 extends TiendaPaymentPlugin {
      * @return string   HTML to display
      */
     function _postPayment($data) {
+    	
+		$jinput = JFactory::getApplication()->input;
+		
         // Process the payment
-        $paction = JRequest::getVar('paction');
+        $paction = $jinput->getString('paction');
 
         $vars = new JObject();
-        $data = JRequest::getVar('DATA', '', 'post');
+        $data = $jinput->post->getString('DATA');
 
         switch ($paction) {
             case "display_message":
-                $checkout = JRequest::getInt('checkout');
+                $checkout = $jinput->getInt('checkout');
 
                 // get the order_id from the session set by the prePayment
                 $mainframe = JFactory::getApplication();

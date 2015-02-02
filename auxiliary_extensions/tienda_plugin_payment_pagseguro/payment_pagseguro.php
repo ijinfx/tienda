@@ -104,7 +104,7 @@ class plgTiendaPayment_pagseguro extends TiendaPaymentPlugin
     function _postPayment( $data )
     {
         // Process the payment
-        $paction = JRequest::getVar('paction');
+        $paction = JFactory::getApplication()->input->getString('paction');
 
         $vars = new JObject();
 
@@ -260,8 +260,8 @@ class plgTiendaPayment_pagseguro extends TiendaPaymentPlugin
      * @return HTML
      */
     function _process()
-    {
-        $data = JRequest::get('post');
+    {     
+		$data = JFactory::getApplication()->input->getArray($_POST);
 
         // validate the IPN info
         $error = $this->_validateIPN($data);

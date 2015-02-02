@@ -46,7 +46,7 @@ class plgButtonTienda extends JPlugin
 		
 		$doc->addScriptDeclaration($js);
         
-        $form_id = JRequest::getVar('id');
+        //$form_id = JFactory::getApplication()->input->getInt('id');
         $getContent = $this->_subject->getContent($name);   
         $link = 'index.php?option=com_tienda&amp;task=elementproduct&amp;tmpl=component&amp;e_name='.$name;        
         JHTML::_('behavior.modal');

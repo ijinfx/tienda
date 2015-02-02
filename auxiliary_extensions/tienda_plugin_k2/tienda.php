@@ -128,16 +128,18 @@ class plgK2Tienda extends K2Plugin
 
 		//Get All plugins variables
 		$plugins = new DSCParameter($item->plugins);
+		
+		$app = JFactory::getApplication();
 
 		//Handle assignment
-		if(JRequest::getBool('tiendaAssign')){
+		if($app->input->getBool('tiendaAssign')){
 			$plugins->merge($tiendaParams);
 			$item->plugins = $plugins->toString();
 			return;
 		}
 
 		//Handle unassignment
-		if(JRequest::getBool('tiendaUnassign')){
+		if($app->input->getBool('tiendaUnassign')){
 			$plugins->set('tiendaproductID', NULL);
 			$plugins->set('tiendaproductName', NULL);
 			$plugins->set('tiendaproductSKU', NULL);
@@ -154,7 +156,7 @@ class plgK2Tienda extends K2Plugin
 		}
 
 		//Handle unassignment
-		if(JRequest::getBool('tiendaRemove')){
+		if($app->input->getBool('tiendaRemove')){
 			JTable::addIncludePath( JPATH_ADMINISTRATOR.'/components/com_tienda/tables' );
 			$product = JTable::getInstance('Products', 'TiendaTable');
 			$product->delete($plugins->get('tiendaproductID'));

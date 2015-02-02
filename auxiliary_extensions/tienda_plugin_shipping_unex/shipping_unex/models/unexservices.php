@@ -91,9 +91,11 @@ class TiendaModelUnexServices extends TiendaModelBase
         	return array();
         }
 		
+		$jinput = JFactory::getApplication()->input;
+		
 		foreach($list as $item)
 		{
-			$item->link = 'index.php?option=com_tienda&view=shipping&task=view&id='.JRequest::getInt('id').'&shippingTask=edit&sid='.$item->service_id;
+			$item->link = 'index.php?option=com_tienda&view=shipping&task=view&id='.$jinput->getInt('id').'&shippingTask=edit&sid='.$item->service_id;
 		}
 		return $list;
 	}

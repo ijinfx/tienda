@@ -81,7 +81,7 @@ class plgTiendaPayment_cardpay extends TiendaPaymentPlugin
         $vars = new JObject();
         
         $app = JFactory::getApplication();
-        $paction = JRequest::getVar( 'paction' );
+        $paction = $app->input->getString( 'paction' );
         
         switch ($paction)
         {
@@ -263,10 +263,12 @@ class plgTiendaPayment_cardpay extends TiendaPaymentPlugin
      */
     function _loadData( &$data, $type)
     {
+    	$app = JFactory::getApplication();
     	$session = JFactory::getSession();
-      $order = JTable::getInstance( 'Orders', 'TiendaTable' );
+      	$order = JTable::getInstance( 'Orders', 'TiendaTable' );
     	$data['secure_key'] = $this->_getParam( 'secure_key' );
     	$data['ipc'] = $_SERVER['REMOTE_ADDR'];
+		
       switch( $type )
     	{
     		case 1:
@@ -285,10 +287,10 @@ class plgTiendaPayment_cardpay extends TiendaPaymentPlugin
     		break;
     		
     		case 2:
-    			$data['vs'] = JRequest::getCmd( 'VS' );
-    			$data['res'] = JRequest::getCmd( 'RES', 'FAIL' );
-    			$data['sign'] = JRequest::getCmd( 'SIGN' );
-    			$data['ac'] = JRequest::getCmd( 'AC' );
+    			$data['vs'] = $app->input->getCmd( 'VS' );
+    			$data['res'] = $app->input->getCmd( 'RES', 'FAIL' );
+    			$data['sign'] = $app->input->getCmd( 'SIGN' );
+    			$data['ac'] = $app->input->getCmd( 'AC' );
     			if( $data['res'] == 'FAIL' )
     				$data['ac']= '';
  

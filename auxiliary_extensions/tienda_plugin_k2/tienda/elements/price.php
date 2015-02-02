@@ -20,7 +20,7 @@ class JElementPrice extends JElement {
 		<span class="k2Note">'.JText::_('Set Normal Price Now Special Prices Later').'</span>
 		';
 
-		$id = JRequest::getInt('cid');
+		$id = JFactory::getApplication()->input->getInt('cid');
 		if($id){
 			$K2Item = JTable::getInstance('K2Item', 'Table');
 			$K2Item->load($id);

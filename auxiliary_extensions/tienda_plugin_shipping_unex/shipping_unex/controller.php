@@ -31,7 +31,7 @@ class TiendaControllerShippingUnex extends TiendaControllerShippingPlugin
 		TiendaToolBarHelper::custom( 'save', 'save', 'save', 'COM_TIENDA_SAVE', false, 'shippingTask' );
 		TiendaToolBarHelper::custom( 'cancel', 'cancel', 'cancel', 'COM_TIENDA_CLOSE', false, 'shippingTask' );
     	
-    	$id = JRequest::getInt('id', '0');
+    	$id = JFactory::getApplication()->input->getInt('id', '0');
     	$sid = TiendaShippingPlugin::getShippingId();
     	$this->includeCustomModel('UnexServices'); 
     	$this->includeCustomTables();
@@ -64,8 +64,8 @@ class TiendaControllerShippingUnex extends TiendaControllerShippingPlugin
     }
     
 	function save(){
-		
-		$values = JRequest::get('post');
+				
+		$values = JFactory::getApplication()->input->getArray($_POST);
 		
     	$this->includeCustomTables(); 
     	$table = JTable::getInstance('UnexServices', 'TiendaTable');

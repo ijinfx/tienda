@@ -131,7 +131,7 @@ class plgTiendaShipping_Weightbased extends TiendaShippingPlugin
 		$list = $model->getList();
 		$vars->list = $list;
 
-		$id = JRequest::getInt('id', '0');
+		$id = JFactory::getApplication()->input->getInt('id', '0');
 		$form = array();
 		$form['action'] = "index.php?option=com_tienda&view=shipping&task=view&id={$id}";
 		$vars->form = $form;
@@ -371,7 +371,7 @@ class plgTiendaShipping_Weightbased extends TiendaShippingPlugin
 		$model = $this->getModel('shippingmethodsweightbased');
 		$row = JTable::getInstance('ShippingMethodsWeightbased', 'TiendaTable');
 
-		$cids = JRequest::getVar('cid', array (0), 'request', 'array');
+		$cids = JFactory::getApplication()->input->get('cid', array (0), 'array');
 		$row->load( $cid[0] );
 		$this->redirect = 'index.php?option=com_tienda&view=shipping&task=view&id='.$row->shipping_method_weightbased_id;
 		if (!$row->delete($cid[0]))

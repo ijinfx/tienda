@@ -67,7 +67,7 @@ class plgUserUserSubNum extends JPlugin {
 			$notify = $this->params->get( 'notify_person', 1 );
 			JTable::addIncludePath( JPATH_ADMINISTRATOR.'/components/com_tienda/tables' );
 			Tienda::load( 'TiendaHelperSubscription', 'helpers.subscription' );
-			$component = JRequest::getCmd( 'option' );
+			$component = JFactory::getApplication()->input->getCmd( 'option' );
 
 			$tokens = explode( ' ', $user['name'] );
 			$last_name = $first_name = '';

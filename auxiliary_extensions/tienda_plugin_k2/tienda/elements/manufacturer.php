@@ -18,7 +18,7 @@ class JElementManufacturer extends JElement {
 		$mainframe = JFactory::getApplication();
 		Tienda::load( 'TiendaSelect', 'library.select' );
 
-		$id = JRequest::getInt('cid');
+		$id = JFactory::getApplication()->input->getInt('cid');
 		if($id){
 			$K2Item = JTable::getInstance('K2Item', 'Table');
 			$K2Item->load($id);

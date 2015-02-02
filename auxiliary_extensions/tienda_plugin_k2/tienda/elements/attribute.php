@@ -17,7 +17,7 @@ class JElementAttribute extends JElement {
 
 		$output = '<span class="k2Note">'.JText::_('Click Apply to be able to create product attributes').'</span>';
 
-		$id = JRequest::getInt('cid');
+		$id = JFactory::getApplication()->input->getInt('cid');
 		if($id){
 			$K2Item = JTable::getInstance('K2Item', 'Table');
 			$K2Item->load($id);

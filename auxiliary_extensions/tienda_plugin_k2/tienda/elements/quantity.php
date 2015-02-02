@@ -19,7 +19,7 @@ class JElementQuantity extends JElement {
 		<span class="k2Note">'.JText::_('Click apply to be able to create product quantities').'</span>
 		';
 
-		$id = JRequest::getInt('cid');
+		$id = JFactory::getApplication()->input->getInt('cid');
 		if($id){
 			$K2Item = JTable::getInstance('K2Item', 'Table');
 			$K2Item->load($id);

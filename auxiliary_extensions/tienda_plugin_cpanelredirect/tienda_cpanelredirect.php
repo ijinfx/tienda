@@ -33,8 +33,10 @@ class plgSystemTienda_CPanelRedirect extends JPlugin
      */
     function onAfterInitialise() 
     {
-        $option = JRequest::getVar( 'option' );
-        $app = JFactory::getApplication();
+    	$app = JFactory::getApplication();
+		
+        $option = $app->input->getCmd( 'option' );
+        
         if ($app->isAdmin() && (empty($option) || $option == 'com_cpanel'))
         {
             $app->redirect( 'index.php?option=com_tienda' );

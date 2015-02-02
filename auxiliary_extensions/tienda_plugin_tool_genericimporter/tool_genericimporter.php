@@ -54,7 +54,7 @@ class plgTiendaTool_GenericImporter extends TiendaToolPlugin
 		$this->state = new JObject();
 		$this->vars = new JObject();
 		
-		$this->state->importer = JRequest::getCmd( 'importer' ); // get name of current importer
+		$this->state->importer = JFactory::getApplication()->input->getCmd( 'importer' ); // get name of current importer
 		$this->import_select = $this->_getListImporters();
 
 		if ( $this->importerExists( $this->state->importer ) ) // check if the importer exists
@@ -231,8 +231,8 @@ class plgTiendaTool_GenericImporter extends TiendaToolPlugin
 			return;
 		}
 
-		$step = JRequest::getInt( 's' ,1 );
-		$type = JRequest::getInt( 't', 1); // 1 - form, 2 - view
+		$step = JFactory::getApplication()->input->getInt( 's' ,1 );
+		$type = JFactory::getApplication()->input->getInt( 't', 1); // 1 - form, 2 - view
 		
 		$response['msg'] = $this->_importer->getHtmlStep( $step, $type );
 		echo json_encode( $response );
@@ -309,15 +309,17 @@ class plgTiendaTool_GenericImporter extends TiendaToolPlugin
 		*/
 	function _getState()
 	{
+		$jinput = JFactory::getApplication()->input;
+		
 		if( $this->isLoaded() ) // get default state of values from request from the current importer
 		{
 			$this->_importer->getDefaultState();
-			$this->_importer->source_import = JRequest::getVar( 'source_import', @$this->_importer->source_import );
+			$this->_importer->source_import = $jinput->getString( 'source_import', @$this->_importer->source_import );
 		}
 		    
 		foreach( $this->state->getProperties() as $key => $value )
 		{
-			$new_value = JRequest::getVar( $key );
+			$new_value = $jinput->getString( $key );
 			$value_exists = array_key_exists( $key, $_POST );
 			if ( $value_exists && !empty( $key ) )
 			{

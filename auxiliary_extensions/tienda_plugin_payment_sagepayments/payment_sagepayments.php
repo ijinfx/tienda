@@ -62,6 +62,8 @@ class plgTiendaPayment_sagepayments extends TiendaPaymentPlugin
      */
     function _prePayment( $data )
     {
+    	$jinput =JFactory::getApplication()->input;
+		
         // prepare the payment form
         
         $vars = new JObject();
@@ -71,18 +73,18 @@ class plgTiendaPayment_sagepayments extends TiendaPaymentPlugin
         $vars->orderpayment_amount = $data['orderpayment_amount'];
         $vars->orderpayment_type = $this->_element;
         
-        $vars->cardtype = JRequest::getVar("cardtype");
-        $vars->cardholder = JRequest::getVar("cardholder");
-        $vars->cardnum = JRequest::getVar("cardnum");
+        $vars->cardtype = $jinput->getString("cardtype");
+        $vars->cardholder = $jinput->getString("cardholder");
+        $vars->cardnum = $jinput->getString("cardnum");
         
-        $exp_month = JRequest::getInt("cardexp_month");
+        $exp_month = $jinput->getInt("cardexp_month");
         if ($exp_month < '10') { $exp_month = '0'.$exp_month; } 
-        $exp_year = JRequest::getInt("cardexp_year");
+        $exp_year = $jinput->getInt("cardexp_year");
         $exp_year = $exp_year - 2000;
         $cardexp = $exp_month.$exp_year;
         
         $vars->cardexp = $cardexp;
-        $vars->cardcv2 = JRequest::getVar("cardcv2");
+        $vars->cardcv2 = $jinput->getString("cardcv2");
         
         $this->_genAsterixes($vars);
         $html = $this->_getLayout('prepayment', $vars);
@@ -103,7 +105,7 @@ class plgTiendaPayment_sagepayments extends TiendaPaymentPlugin
         $vars = new JObject();
         
         $app = JFactory::getApplication();
-        $paction = JRequest::getVar( 'paction' );
+        $paction = $app->input->getString( 'paction' );
         
         switch ($paction)
         {
@@ -312,7 +314,7 @@ class plgTiendaPayment_sagepayments extends TiendaPaymentPlugin
     function _genAsterixes( &$vars )
     {
     	// show only last 4 digits of the Card Number
-        $vars->cardnum_last4 = substr( JRequest::getVar("cardnum"), -4 );
+        $vars->cardnum_last4 = substr( JFactory::getApplication()->input->getString("cardnum"), -4 );
         
         // hide whole CV2 number
         if($vars->cardcv2 != '')
@@ -457,8 +459,8 @@ class plgTiendaPayment_sagepayments extends TiendaPaymentPlugin
         if ( ! JSession::checkToken() ) {
             return $this->_renderHtml( JText::_('COM_TIENDA_INVALID_TOKEN') );
         }
-        
-        $data = JRequest::get('post');
+              
+		$data = JFactory::getApplication()->input->getArray($_POST);
         
         // get order information
         JTable::addIncludePath( JPATH_ADMINISTRATOR.'/components/com_tienda/tables' );

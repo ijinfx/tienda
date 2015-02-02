@@ -114,7 +114,7 @@ class plgTiendaPayment_payson extends TiendaPaymentPlugin
     function _postPayment( $data )
     {
         // Process the payment
-        $paction = JRequest::getVar('paction');
+        $paction = JFactory::getApplication()->input->getString('paction');
         
         $vars = new JObject();
         
@@ -234,7 +234,8 @@ class plgTiendaPayment_payson extends TiendaPaymentPlugin
 	 */
 	function _process() 
 	{
-		$data = JRequest::get('post');
+		$data = JFactory::getApplication()->input->getArray($_POST);
+		
 		// validate the request info
 		$error = $this->_validateData( $data );
 

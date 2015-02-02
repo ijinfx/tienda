@@ -124,8 +124,8 @@ class plgTiendaPayment_flo2cash extends TiendaPaymentPlugin
      * @return string   HTML to display
      */
     function _postPayment( $data )
-    {
-		$values = JRequest::get('request');
+    {		
+		$values = JFactory::getApplication()->input->getArray($_REQUEST);
 		$vars = new JObject();
 		
 		$data_temp = array_merge($values, $data);

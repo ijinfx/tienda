@@ -20,11 +20,11 @@ defined('_JEXEC') or die('Restricted access');
     {
     Tienda::load( 'TiendaMenu', 'library.menu' );
     
-    $hide = JRequest::getInt('hidemainmenu');
-    $menu = TiendaMenu::getInstance( 'submenu' );
-    
-    $app = JFactory::getApplication();
+	$app = JFactory::getApplication();
     $document = JFactory::getDocument();
+	
+    $hide = $app->input->getInt('hidemainmenu');
+    $menu = TiendaMenu::getInstance( 'submenu' );
         
     require( JModuleHelper::getLayoutPath( 'mod_tienda_admin_submenu' ) );
 	 }

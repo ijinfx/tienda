@@ -68,15 +68,17 @@ class plgTiendaPayment_ccoffline extends TiendaPaymentPlugin
         $vars->orderpayment_id = $data['orderpayment_id'];
         $vars->orderpayment_amount = $data['orderpayment_amount'];
         $vars->orderpayment_type = $this->_element;
+		
+		$jinput = JFactory::getApplication()->input;
         
-        $vars->cardtype = !empty($data['cardtype']) ? $data['cardtype'] : JRequest::getVar('cardtype');
-        $vars->cardnum = !empty($data['cardnum']) ? $data['cardnum'] : JRequest::getVar('cardnum');      
-        $vars->cardcvv = !empty($data['cardcvv']) ? $data['cardcvv'] : JRequest::getVar('cardcvv');
+        $vars->cardtype = !empty($data['cardtype']) ? $data['cardtype'] : $jinput->getString('cardtype');
+        $vars->cardnum = !empty($data['cardnum']) ? $data['cardnum'] : $jinput->getString('cardnum');      
+        $vars->cardcvv = !empty($data['cardcvv']) ? $data['cardcvv'] : $jinput->getString('cardcvv');
         $vars->cardnum_last4 = substr( $vars->cardnum, -4 );
         
-        $exp_month = !empty($data['cardexp_month']) ? $data['cardexp_month'] : JRequest::getVar('cardexp_month');
+        $exp_month = !empty($data['cardexp_month']) ? $data['cardexp_month'] : $jinput->getString('cardexp_month');
         if ($exp_month < '10') { $exp_month = '0'.$exp_month; } 
-        $exp_year = !empty($data['cardexp_year']) ? $data['cardexp_year'] : JRequest::getVar('cardexp_year');
+        $exp_year = !empty($data['cardexp_year']) ? $data['cardexp_year'] : $jinput->getString('cardexp_year');
         $exp_year = $exp_year - 2000;
         $cardexp = $exp_month.$exp_year;
         $vars->cardexp = $cardexp;
@@ -95,14 +97,16 @@ class plgTiendaPayment_ccoffline extends TiendaPaymentPlugin
      */
     function _postPayment( $data )
     {
+    	$jinput = JFactory::getApplication()->input;
+		
         // Process the payment        
         $vars = new JObject();
-        $orderpayment_id = !empty($data['orderpayment_id']) ? $data['orderpayment_id'] : JRequest::getVar('orderpayment_id');
+        $orderpayment_id = !empty($data['orderpayment_id']) ? $data['orderpayment_id'] : $jinput->getInt('orderpayment_id');
                 
-        $cardtype = !empty($data['cardtype']) ? $data['cardtype'] : JRequest::getVar('cardtype');
-        $cardnum = !empty($data['cardnum']) ? $data['cardnum'] : JRequest::getVar('cardnum');
-        $cardexp =  !empty($data['cardexp']) ? $data['cardexp'] : JRequest::getVar('cardexp');      
-        $cardcvv = !empty($data['cardcvv']) ? $data['cardcvv'] : JRequest::getVar('cardcvv');
+        $cardtype = !empty($data['cardtype']) ? $data['cardtype'] : $jinput->getString('cardtype');
+        $cardnum = !empty($data['cardnum']) ? $data['cardnum'] : $jinput->getString('cardnum');
+        $cardexp =  !empty($data['cardexp']) ? $data['cardexp'] : $jinput->getString('cardexp');      
+        $cardcvv = !empty($data['cardcvv']) ? $data['cardcvv'] : $jinput->getString('cardcvv');
         
         $formatted = array( 
                         'cardtype' => $cardtype,

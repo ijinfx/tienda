@@ -46,9 +46,10 @@ class TiendaControllerShippingFedex extends TiendaControllerShippingPlugin
         $model = $this->getModel($this->get('suffix'));
         $row = $model->getTable();
 
-        $cids = JRequest::getVar('cid', array (0), 'post', 'array');
-        $task = JRequest::getVar( 'shippingTask' );
-        $id = JRequest::getInt( 'id' );
+		$app = JFactory::getApplication();      
+		$cids = $app->input->post->get('cid', array (0), 'array');
+        $task = $app->input->getCmd( 'shippingTask' );
+        $id = $app->input->getInt( 'id' );
         $vals = explode('.', $task);
 
         $field = $vals['0'];

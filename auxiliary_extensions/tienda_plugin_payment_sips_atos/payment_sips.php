@@ -104,19 +104,22 @@ class plgTiendaPayment_sips extends TiendaPaymentPlugin {
      * @return string   HTML to display
      */
     function _postPayment($data) {
+    	
+    	$app = JFactory::getApplication();		
+		
         // Process the payment
-        $paction = JRequest::getVar('paction');
+        $paction = $app->input->getString('paction');
 
         $vars = new JObject();
-        $data = JRequest::getVar('DATA', '', 'post');
+        $data = $app->input->post->getString('DATA');
 
         switch ($paction) {
             case "display_message":
-                $checkout = JRequest::getInt('checkout');
+                $checkout = $app->input->getInt('checkout');
 
                 // get the order_id from the session set by the prePayment
-                $mainframe = JFactory::getApplication();
-                $order_id = (int) $mainframe->getUserState('tienda.order_id');
+               
+                $order_id = (int) $app->getUserState('tienda.order_id');
                 $order = JTable::getInstance('Orders', 'TiendaTable');
                 $order->load($order_id);
                 $items = $order->getItems();
@@ -152,9 +155,9 @@ class plgTiendaPayment_sips extends TiendaPaymentPlugin {
      */
     function _process() {
 
-        $send_email = false;
-
-        $data = JRequest::getVar('DATA', '', 'post');
+        $send_email = false;        
+		$data = JFactory::getApplication()->input->post->getString('DATA');
+		
         // Invalidate data if it is in the wrong format
         if (!preg_match(':^[a-zA-Z0-9]+$:', $data)) {
             $data = '';

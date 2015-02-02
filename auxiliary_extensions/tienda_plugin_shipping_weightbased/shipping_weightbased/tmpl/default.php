@@ -6,7 +6,7 @@
 
 <form action="<?php echo JRoute::_( @$form['action'] )?>" method="post"	name="adminForm" enctype="multipart/form-data">
 
-	<?php echo TiendaGrid::pagetooltip( JRequest::getVar('view') ); ?>
+	<?php echo TiendaGrid::pagetooltip( JFactory::getApplication()->input->getCmd('view') ); ?>
 
 	<table class="adminlist" style="clear: both;">
 		<thead>
@@ -57,7 +57,7 @@
 					<?php
 						Tienda::load( 'TiendaUrl', 'library.url' );
 						Tienda::load( 'TiendaHelperShipping', 'helpers.shipping' );
-						$id = JRequest::getInt('id', '0');
+						$id = JFactory::getApplication()->input->getInt('id', '0');
 					?>
 					<span style="float: right;">
 						[<?php echo TiendaUrl::popup( "index.php?option=com_tienda&view=shipping&task=view&id={$id}&shippingTask=setRates&tmpl=component&sid={$item->shipping_method_weightbased_id}",JText::_('Set Rates') ); ?>]

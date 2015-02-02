@@ -35,7 +35,7 @@ class JElementTools extends JElement {
 
 		$document->addStyleDeclaration($css);
 
-		$id = JRequest::getInt('cid');
+		$id = JFactory::getApplication()->input->getInt('cid');
 
 		if($id){
 			$K2Item = JTable::getInstance('K2Item', 'Table');

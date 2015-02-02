@@ -81,7 +81,7 @@ class plgTiendaPayment_tatrapay extends TiendaPaymentPlugin
         $vars = new JObject();
         
         $app = JFactory::getApplication();
-        $paction = JRequest::getVar( 'paction' );
+        $paction = $app->input->getString( 'paction' );
         
         switch ($paction)
         {
@@ -286,10 +286,11 @@ class plgTiendaPayment_tatrapay extends TiendaPaymentPlugin
     		break;
     		
     		case 2:
-    			$data['vs'] = JRequest::getCmd( 'VS' );
-    			$data['ss'] = JRequest::getCmd( 'SS' );
-    			$data['res'] = JRequest::getCmd( 'RES', 'FAIL' );
-    			$data['sign'] = JRequest::getCmd( 'SIGN' );
+				$jinput = JFactory::getApplication()->input;
+    			$data['vs'] = $jinput->getCmd( 'VS' );
+    			$data['ss'] = $jinput->getCmd( 'SS' );
+    			$data['res'] = $jinput->getCmd( 'RES', 'FAIL' );
+    			$data['sign'] = $jinput->getCmd( 'SIGN' );
     			$order->load( $data['vs'] );
     			if( !$order || ( $data['vs'] < 1 ) ||
     					( $data['vs'] != $session->get( 'order_id' ) ) ) // order is not valid

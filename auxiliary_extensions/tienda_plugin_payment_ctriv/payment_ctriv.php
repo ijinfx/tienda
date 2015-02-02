@@ -191,10 +191,10 @@ class plgTiendaPayment_ctriv extends TiendaPaymentPlugin
      * @return string   HTML to display
      */
     function _postPayment( $data )
-    {
-    	$values = JRequest::get('request');
+    {    	
+		$values = JFactory::getApplication()->input->getArray($_REQUEST);	
     	
-    	if($values['error'] == '0')
+    	if($jinput->get('error') == '0')
     		$vars->approved = true;
     	else
     		$vars->approved = false;
@@ -250,7 +250,7 @@ class plgTiendaPayment_ctriv extends TiendaPaymentPlugin
         {
             // if an error occurred 
             $order->order_state_id = $this->params->get('failed_order_state', '10'); // FAILED
-            $errors[] = JRequest::getVar('ErrorText', JText::_('ERROR_WHILE_PAYING'));
+            $errors[] = JFactory::getApplication()->input->getString('ErrorText', JText::_('ERROR_WHILE_PAYING'));
         }
             else 
         {

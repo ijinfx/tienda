@@ -44,7 +44,7 @@ class TiendaControllerShippingWeightbased extends TiendaControllerShippingPlugin
 
 	function save(){
 
-		$values = JRequest::get('post');
+		$values = JFactory::getApplication()->input->getArray($_POST);
 
 		$this->includeCustomTables();
 		$table = JTable::getInstance('ShippingMethodsWeightbased', 'TiendaTable');
@@ -72,7 +72,7 @@ class TiendaControllerShippingWeightbased extends TiendaControllerShippingPlugin
 		Tienda::load( 'TiendaGrid', 'library.grid' );
 		Tienda::load( 'TiendaSelect', 'library.select' );
 		$this->includeCustomModel('ShippingRatesWeightbased');
-		$sid = JRequest::getVar('sid');
+		$sid = JFactory::getApplication()->input->getCmd('sid');
 
 		$this->includeCustomTables();
 		$row = JTable::getInstance('ShippingMethodsWeightbased', 'TiendaTable');
@@ -121,7 +121,7 @@ class TiendaControllerShippingWeightbased extends TiendaControllerShippingPlugin
 		TiendaToolBarHelper::custom( 'save', 'save', 'save', 'COM_TIENDA_SAVE', false, 'shippingTask' );
 		TiendaToolBarHelper::custom( 'cancel', 'cancel', 'cancel', 'COM_TIENDA_CLOSE', false, 'shippingTask' );
 		 
-		$id = JRequest::getInt('id', '0');
+		$id = JFactory::getApplication()->input->getInt('id', '0');
 		$sid = TiendaShippingPlugin::getShippingId();
 		$this->includeCustomModel('ShippingMethodsWeightbased');
 
@@ -159,7 +159,8 @@ class TiendaControllerShippingWeightbased extends TiendaControllerShippingPlugin
 		$model  = $this->getModel( $this->get('suffix') );
 
 		$row = $model->getTable();
-		$row->bind(JRequest::get('post'));
+		$post = JFactory::getApplication()->input->getArray($_POST);
+		$row->bind($post);
 		if ( $row->save() )
 		{
 			$dispatcher = JDispatcher::getInstance();
@@ -193,14 +194,15 @@ class TiendaControllerShippingWeightbased extends TiendaControllerShippingPlugin
 		$model = $this->getModel('shippingratesweightbased');
 		$row = $model->getTable();
 
-		$cids = JRequest::getVar('cid', array(0), 'request', 'array');
-		$geozones = JRequest::getVar('geozones', array(0), 'request', 'array');
-		$base_prices = JRequest::getVar('base_prices', array(0), 'request', 'array');
-		$weight_starts = JRequest::getVar('weight_starts', array(0), 'request', 'array');
-		$weight_ends = JRequest::getVar('weight_ends', array(0), 'request', 'array');
-		$weight_steps_size = JRequest::getVar('weight_steps_size', array(0), 'request', 'array');
-		$price_steps = JRequest::getVar('price_steps', array(0), 'request', 'array');
-		$handlings = JRequest::getVar('handlings', array(0), 'request', 'array');
+		$app = JFactory::getApplication();
+		$cids = $app->input->get('cid', array(0), 'array');
+		$geozones = $app->input->get('geozones', array(0), 'array');
+		$base_prices = $app->input->get('base_prices', array(0), 'array');
+		$weight_starts = $app->input->get('weight_starts', array(0), 'array');
+		$weight_ends = $app->input->get('weight_ends', array(0), 'array');
+		$weight_steps_size = $app->input->get('weight_steps_size', array(0), 'array');
+		$price_steps = $app->input->get('price_steps', array(0), 'array');
+		$handlings = $app->input->get('handlings', array(0), 'array');
 
 		foreach (@$cids as $cid)
 		{
@@ -246,7 +248,7 @@ class TiendaControllerShippingWeightbased extends TiendaControllerShippingPlugin
 		$this->set('suffix', 'shippingratesweightbased');
 		$model  = $this->getModel( $this->get('suffix') );
 
-		$cids = JRequest::getVar('cid', array(0), 'request', 'array');
+		$cids = JFactory::getApplication()->input->get('cid', array(0), 'array');
 
 		foreach (@$cids as $cid)
 		{

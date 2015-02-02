@@ -159,7 +159,7 @@ class plgTiendaPayment_moneybookers extends TiendaPaymentPlugin
         
 		// Use AJAX to show plugins that are available
 		JLoader::import( 'com_tienda.library.json', JPATH_ADMINISTRATOR.'/components' );
-		$guest = JRequest::getVar( 'guest', '0');
+		$guest = JFactory::getApplication()->input->getCmd( 'guest', '0');
 		if ($guest == '1' && Tienda::getInstance()->get('guest_checkout_enabled'))
 		{
 			$guest = true;
@@ -353,18 +353,20 @@ class plgTiendaPayment_moneybookers extends TiendaPaymentPlugin
      */
     function _postPayment( $data )
     {
+    	$app = JFactory::getApplication();
+		
         // Process the payment        
         
-		$orderpayment_type = JRequest::getVar( 'orderpayment_type' );
+		$orderpayment_type = $app->input->getCmd( 'orderpayment_type' );
 		
 		if ($orderpayment_type == $this->_element)
 		{
-			$paction 	= JRequest::getVar( 'paction' );
+			$paction 	= $app->input->getCmd( 'paction' );
 			$html = "";
 			switch ($paction) {
 				case "message":
 					$user = JFactory::getUser();
-					$checkout = JRequest::getInt('checkout');
+					$checkout = $app->input->getCmd('checkout');
 
 					// check if cart has recurring item and if checkout variable is set to '1'
 					Tienda::load( "TiendaHelperCarts", 'helpers.carts' );
@@ -455,9 +457,9 @@ class plgTiendaPayment_moneybookers extends TiendaPaymentPlugin
     {
 		
     	$errors = array();
-    	$send_email = false;
+    	$send_email = false;    	
     	
-    	$data = JRequest::get('POST');  	
+		$data = JFactory::getApplication()->input->getArray($_POST);	
     	
     	$this->_logResponse($data);
 		

@@ -140,12 +140,14 @@ class plgTiendaPayment_firstdata extends TiendaPaymentPlugin
         $vars->orderpayment_id = $data['orderpayment_id'];
         $vars->orderpayment_amount = $data['orderpayment_amount'];
         $vars->orderpayment_type = $this->_element;
+		
+		$jinput = JFactory::getApplication()->input;
         
-        $vars->cardnum = JRequest::getVar("cardnum");
-        $vars->cardexpmonth = JRequest::getVar("cardexpmonth");
-        $vars->cardexpyear = JRequest::getVar("cardexpyear");        
-        $vars->cardcvv = JRequest::getVar("cardcvv");
-        $vars->cardnum_last4 = substr( JRequest::getVar("cardnum"), -4 );
+        $vars->cardnum = $jinput->getString("cardnum");
+        $vars->cardexpmonth = $jinput->getString("cardexpmonth");
+        $vars->cardexpyear = $jinput->getString("cardexpyear");        
+        $vars->cardcvv = $jinput->getString("cardcvv");
+        $vars->cardnum_last4 = substr( $jinput->getString("cardnum"), -4 );
         
         $html = $this->_getLayout('prepayment', $vars);
         return $html;
@@ -165,7 +167,7 @@ class plgTiendaPayment_firstdata extends TiendaPaymentPlugin
         $vars = new JObject();
         
         $app = JFactory::getApplication();
-        $paction = JRequest::getVar( 'paction' );
+        $paction = $app->input->getString( 'paction' );
         
         switch ($paction)
         {
@@ -293,8 +295,8 @@ class plgTiendaPayment_firstdata extends TiendaPaymentPlugin
             return JText::_('TIENDA LINKPOINT FIRSTDATA MESSAGE MISSING CERTIFICATE FILE');
         }             
 
-		//get the information to send to LinkPoint / FirstData        
-        $data = JRequest::get('post');
+		//get the information to send to LinkPoint / FirstData 
+		$post = JFactory::getApplication()->input->getArray($_POST);
         
         // get order information
         $order_id 			= $data['order_id'];

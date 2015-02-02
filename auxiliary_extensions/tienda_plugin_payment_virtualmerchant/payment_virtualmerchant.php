@@ -233,7 +233,7 @@ class plgTiendaPayment_virtualmerchant extends TiendaPaymentPlugin
 		else 
 		{
 			// Process the payment
-			$result = JRequest::getVar('ssl_result');
+			$result = JFactory::getApplication()->input->getString('ssl_result');
 		}
 
         $vars = new JObject();
@@ -294,8 +294,8 @@ class plgTiendaPayment_virtualmerchant extends TiendaPaymentPlugin
      ************************************/
     
     function _process($data)
-    {
-		$post = JRequest::get('post');
+    {		
+		$post = JFactory::getApplication()->input->get($_POST);
     	
     	$orderpayment_id = @$data['ssl_invoice_number'];
     	
